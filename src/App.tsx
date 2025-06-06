@@ -1,12 +1,15 @@
+import Header from "./components/Header.tsx";
+import ShipmentsList from "./pages/ShipmentsList.tsx";
+import Signup from "./User/Signup.tsx";
 
 
 export default function App() {
 
     return (
         <>
-            <p>
-                Click on the Vite and React logos to learn more
-            </p>
+            <Header />
+            <Signup />
+            {/*<ShipmentsList/>*/}
         </>
     )
 }

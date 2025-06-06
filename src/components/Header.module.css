@@ -1,0 +1,60 @@
+.header {
+    position: sticky;
+    top: 0;
+    left: 0;
+    width: 100%; /* 전체 가로 */
+    height: 64px; /* 원하는 높이 */
+    background: #fff; /* 밝은 배경 */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06); /* 아래 그림자 */
+    z-index: 1000; /* 다른 요소 위에 보이게 */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    gap: 12px; /* 로고-텍스트 사이 */
+}
+
+.logo img {
+    height: 40px;
+}
+
+.menu {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+}
+
+.menuItem {
+    cursor: pointer;
+    position: relative;
+    padding: 8px 16px;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+.menuItem:hover {
+    background: #f2f4f8; /* 마우스 올리면 배경색 변경 */
+}
+
+.dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 160px;
+    background: #fff;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+    padding: 8px 0;
+}
+
+.menuItem:hover .dropdown {
+    display: block; /* 마우스 오버시 드롭다운 표시 */
+}
