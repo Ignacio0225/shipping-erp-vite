@@ -1,0 +1,79 @@
+/* Modal.module.css */
+
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 2000;
+    background: rgba(40, 40, 40, 0.4); /* 회색+반투명 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeInBackdrop 0.2s;
+}
+
+@keyframes fadeInBackdrop {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.modal-content {
+    display: flex;
+    flex-direction: column;
+    background: #a69d9d;
+    padding: 2rem 1.5rem;
+    border-radius: 14px;
+    box-shadow: 0 4px 32px rgba(0, 0, 0, 0.23);
+    min-width: 320px;
+    max-width: 95vw;
+    min-height: 150px;
+    position: relative;
+    animation: fadeInModal 0.2s;
+}
+
+.modal-content form {
+    display: flex;               /* 플렉스 컨테이너로 지정 */
+    flex-direction: column;      /* 세로(수직) 방향 정렬 */
+    gap: 0.5rem;                   /* 각 input, label, button 사이 여백 */
+    align-items: stretch;        /* 너비를 form 영역에 맞춰 늘림(좌우 정렬) */
+}
+
+
+.modal-content form button {
+    margin-top:1rem;
+    background-color: #e8d48b;
+}
+
+
+@keyframes fadeInModal {
+    from {
+        opacity: 0;
+        transform: scale(0.97);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.modal-close-btn {
+    position: absolute;
+    top: 12px;
+    right: 18px;
+    border: none;
+    background: none;
+    font-size: 1rem;
+    color: #f35b5b;
+    cursor: pointer;
+    transition: color 0.15s;
+}
+
+.modal-close-btn:hover {
+    color: #383a37;
+}

@@ -10,5 +10,19 @@ export interface Shipment {
         // 안 보내도 에러 안 남
     file_paths?:string; // 파일의 경로를 문자열로 받아옴 (선택적임 fastAPI 모델의 nullable = True 와 동일)
     created_at:string; // 생성일시를 문자열(ISO 문자열)로 받아옴
-    creator_id?:number; // 작성자 id를 숫자로 받아옴 (선택적임 fastAPI 모델의 nullable = True 와 동일)
+    creator?: {
+        id:number;
+        username:string;
+        email:string;
+        role:string;
+    }; // 작성자 id를 숫자로 받아옴 (선택적임 fastAPI 모델의 nullable = True 와 동일)
+}
+
+
+export interface ShipmentPageOut {
+    items: Shipment[];
+    total: number;
+    page: number;
+    size: number;
+    total_pages: number;
 }

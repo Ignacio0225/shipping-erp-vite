@@ -1,60 +1,91 @@
 .header {
-    position: sticky;
-    top: 0;
-    left: 0;
-    width: 100%; /* 전체 가로 */
-    height: 64px; /* 원하는 높이 */
-    background: #fff; /* 밝은 배경 */
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06); /* 아래 그림자 */
-    z-index: 1000; /* 다른 요소 위에 보이게 */
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 32px;
+    display: flex; /* 가로 레이아웃 */
+    align-items: center; /* 세로 중앙정렬 */
+    justify-content: space-between; /* 좌우 분리 */
+    padding: 50px 32px;
+    height: 20px;
+    background: linear-gradient(90deg, #100101 0%, #dbe4e7 100%); /* 블루-민트 그라데이션 */
+    color: #fff;
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.07);
 }
 
-.logo {
-    display: flex;
-    align-items: center;
-    font-size: 1.5rem;
-    font-weight: bold;
-    gap: 12px; /* 로고-텍스트 사이 */
+#MsLogo {
+    height: 44px !important;   /* !important로 강제 적용 */
+    width: auto;               /* 비율 유지하며 높이만 고정 */
+    display: block;
 }
 
-.logo img {
-    height: 40px;
-}
 
-.menu {
+.button-group {
     display: flex;
-    gap: 24px;
+    gap: 12px; /* 버튼 간격 */
     align-items: center;
 }
 
-.menuItem {
+.board-group {
+    display: flex;
+    gap: 15px; /* 게시판 버튼 간격 */
+    margin-right: 50px; /* 게시판 버튼 우측 여백 */
+}
+
+.header-btn {
+    background: #fff; /* 버튼 배경 흰색 */
+    color: #2193b0; /* 글자색 파란색 */
+    border: none;
+    border-radius: 7px;
+    padding: 8px 20px;
+    font-size: 1rem;
+    font-weight: 500;
     cursor: pointer;
-    position: relative;
-    padding: 8px 16px;
-    border-radius: 4px;
-    transition: background 0.2s;
+    transition: background 0.22s, color 0.22s;
+    box-shadow: 0 2px 8px rgba(30, 80, 150, 0.06);
 }
 
-.menuItem:hover {
-    background: #f2f4f8; /* 마우스 올리면 배경색 변경 */
+.header-btn:hover {
+    background: #2193b0; /* 호버시 파란색 */
+    color: #fff;
 }
 
-.dropdown {
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    min-width: 160px;
-    background: #fff;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
-    border-radius: 8px;
-    padding: 8px 0;
+
+
+.join {
+    background: #25c8d7; /* 버튼 배경 흰색 */
+    color: #030303; /* 글자색 파란색 */
+    border: none;
+    border-radius: 7px;
+    padding: 8px 20px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.22s, color 0.22s;
+    box-shadow: 0 2px 8px rgba(30, 80, 150, 0.06);
 }
 
-.menuItem:hover .dropdown {
-    display: block; /* 마우스 오버시 드롭다운 표시 */
+
+
+.login {
+    background: #54f359; /* 버튼 배경 흰색 */
+    color: #030303; /* 글자색 파란색 */
+    border: none;
+    border-radius: 7px;
+    padding: 8px 20px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.22s, color 0.22s;
+    box-shadow: 0 2px 8px rgba(30, 80, 150, 0.06);
+}
+
+
+.logout {
+    background: #b75c5c; /* 버튼 배경 흰색 */
+    color: #030303; /* 글자색 파란색 */
+    border: none;
+    border-radius: 7px;
+    padding: 8px 20px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.22s, color 0.22s;
+    box-shadow: 0 2px 8px rgba(30, 80, 150, 0.06);
 }

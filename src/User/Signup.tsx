@@ -1,9 +1,15 @@
 import {useState} from 'react'
 import {publicAxios} from '../api/axios'
+import Modal from "../components/Modal.tsx";
 
 
+interface LoginProps {
+    isOpen: boolean;
+    onClose: () => void;
+}
 
-export default function Signup() // 3. Signup이라는 이름의 React 함수형 컴포넌트를 만듭니다.
+
+export default function Signup({isOpen, onClose}: LoginProps) // 3. Signup이라는 이름의 React 함수형 컴포넌트를 만듭니다.
 {
     // 4. 입력값(상태) 관리: 각 input 값과, 메시지(상태) 변수들을 생성합니다.
     const [email, setEmail] = useState('');
@@ -18,8 +24,8 @@ export default function Signup() // 3. Signup이라는 이름의 React 함수형
 
         // 7. (첫 번째 검증) 비밀번호와 확인값이 일치하지 않으면 경고 메시지 출력 후 함수 종료
         if (password !== checkPassword) {
-        setMessage("비밀번호가 일치하지 않습니다.");
-        return;
+            setMessage("비밀번호가 일치하지 않습니다.");
+            return;
         }
 
         // 8. (두 번째 검증) 비밀번호에 영문·숫자가 모두 포함됐는지 체크 (정규표현식)
@@ -39,6 +45,7 @@ export default function Signup() // 3. Signup이라는 이름의 React 함수형
             setUsername('');
             setPassword('');
             setCheckPassword('');
+            setTimeout(() =>onClose(),1000)
         } catch (error: any) {
             setMessage('Sign up failed' + (error.response?.data?.detail || error.message));
         }
@@ -46,59 +53,61 @@ export default function Signup() // 3. Signup이라는 이름의 React 함수형
 
 
     return (
-        <form onSubmit={handleSignup}> {/* 14. 폼 제출시 handleSignup 함수 실행 */}
-            <h2>회원가입</h2>
+        <Modal onClose={onClose} isOpen={isOpen}>
+            <form onSubmit={handleSignup}> {/* 14. 폼 제출시 handleSignup 함수 실행 */}
+                <h2>회원가입</h2>
 
-            <label htmlFor={'email'}>Email</label>
-            <input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder={'Email'}
-                required={true}
-                name={'email'}
-            />
+                <label htmlFor={'email'}>Email</label>
+                <input
+                    id="email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder={'Email'}
+                    required={true}
+                    name={'email'}
+                />
 
-            <label htmlFor={'username'}>Username</label>
-            <input
-                id="username"
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder={'이름'}
-                required={true}
-                maxLength={15}
-                name={'username'}
-            />
+                <label htmlFor={'username'}>Username</label>
+                <input
+                    id="username"
+                    type="text"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    placeholder={'이름'}
+                    required={true}
+                    maxLength={15}
+                    name={'username'}
+                />
 
-            <label htmlFor={'password'}>Password</label>
-            <input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder={'숫자 영문 조합 8자리'}
-                required={true}
-                minLength={8}
-                maxLength={20}
-                name={'password'}
-            />
-            <label htmlFor={'checkPassword'}>Check Password</label>
-            <input
-                id="checkPassword"
-                type="password"
-                value={checkPassword}
-                onChange={e => setCheckPassword(e.target.value)}
-                placeholder={'숫자 영문 조합 8자리'}
-                required={true}
-                minLength={8}
-                maxLength={20}
-                name={'checkPassword'}
-            />
+                <label htmlFor={'password'}>Password</label>
+                <input
+                    id="password"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder={'숫자 영문 조합 8자리'}
+                    required={true}
+                    minLength={8}
+                    maxLength={20}
+                    name={'password'}
+                />
+                <label htmlFor={'checkPassword'}>Check Password</label>
+                <input
+                    id="checkPassword"
+                    type="password"
+                    value={checkPassword}
+                    onChange={e => setCheckPassword(e.target.value)}
+                    placeholder={'숫자 영문 조합 8자리'}
+                    required={true}
+                    minLength={8}
+                    maxLength={20}
+                    name={'checkPassword'}
+                />
 
-            <button type={'submit'}>가입하기</button>
-            <div>{message}</div>
-        </form>
+                <button type={'submit'}>가입하기</button>
+                <div>{message}</div>
+            </form>
+        </Modal>
     )
 }

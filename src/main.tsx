@@ -1,9 +1,29 @@
-import {StrictMode} from 'react'
-import {createRoot} from 'react-dom/client'
-import App from './App.tsx'
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+// react-route-dom 을 설치후 import
+import {RouterProvider,createBrowserRouter} from 'react-router-dom'
+
+import './index.css'
+
+import Home from "./pages/Home.tsx";
+import RootLayout from "./routes/RootLayout.tsx";
+import SharePostList from "./pages/SharePostList.tsx";
+
+
+const router=createBrowserRouter([
+    {
+        path:'/',
+        element:<RootLayout/>,
+        children:[
+            {path: '/', element: <Home/>,},
+            {path: '/post', element: <SharePostList/>,},
+        ],
+    },
+]);
 
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
-        <App/>
+        {/*route를 사용하기 위해 router를 설정해줌 기존에 있던 App컴포넌트는 router 내부로 이동*/}
+        <RouterProvider router={router}/>
     </StrictMode>,
 )
