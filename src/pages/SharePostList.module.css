@@ -33,6 +33,7 @@
     gap: 7px;
     transition: box-shadow 0.17s;
 }
+
 .share-post-card:hover {
     box-shadow: 0 6px 20px rgba(30, 123, 200, 0.15);
 }
@@ -43,11 +44,22 @@
     color: #1760a7;
     margin-bottom: 3px;
 }
+
 .share-post-username {
     font-size: 0.99rem;
     color: #7285a5;
 }
+
 .share-post-date {
     font-size: 0.95rem;
     color: #b6bfc6;
+}
+
+.share-search-input {
+    padding: 0.5rem;
+    width: 300px;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    border-radius: 8px;
+    border: 1px solid #ccc;
 }

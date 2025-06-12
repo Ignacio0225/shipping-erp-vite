@@ -1,22 +1,25 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 // react-route-dom 을 설치후 import
-import {RouterProvider,createBrowserRouter} from 'react-router-dom'
+import {RouterProvider, createBrowserRouter} from 'react-router-dom'
 
 import './index.css'
 
 import Home from "./pages/Home.tsx";
 import RootLayout from "./routes/RootLayout.tsx";
 import SharePostList from "./pages/SharePostList.tsx";
+import SharePost from "./pages/SharePost.tsx";
 
 
 const router=createBrowserRouter([
+
     {
         path:'/',
         element:<RootLayout/>,
         children:[
             {path: '/', element: <Home/>,},
-            {path: '/post', element: <SharePostList/>,},
+            {path: '/posts', element: <SharePostList/>,},
+            {path:'posts/:ship_id',element:<SharePost/>,},
         ],
     },
 ]);
