@@ -47,7 +47,7 @@ export default function Signup({isOpen, onClose}: LoginProps) // 3. Signup이라
             setCheckPassword('');
             setTimeout(() =>onClose(),1000)
         } catch (error: any) {
-            setMessage('Sign up failed' + (error.response?.data?.detail || error.message));
+            setMessage(error.response?.data?.detail || error.message);
         }
     };
 

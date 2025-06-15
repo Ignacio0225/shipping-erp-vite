@@ -3,12 +3,13 @@ import { createRoot } from 'react-dom/client'
 // react-route-dom 을 설치후 import
 import {RouterProvider, createBrowserRouter} from 'react-router-dom'
 
-import './index.css'
+import './global.css'
 
 import Home from "./pages/Home.tsx";
 import RootLayout from "./routes/RootLayout.tsx";
 import SharePostList from "./pages/SharePostList.tsx";
 import SharePost from "./pages/SharePost.tsx";
+import NotFound from "./NotFound.tsx";
 
 
 const router=createBrowserRouter([
@@ -19,7 +20,8 @@ const router=createBrowserRouter([
         children:[
             {path: '/', element: <Home/>,},
             {path: '/posts', element: <SharePostList/>,},
-            {path:'posts/:ship_id',element:<SharePost/>,},
+            {path:'/posts/:ship_id',element:<SharePost/>,},
+            {path:'*',element:<NotFound/>},
         ],
     },
 ]);

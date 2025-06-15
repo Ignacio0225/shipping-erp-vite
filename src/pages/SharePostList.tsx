@@ -6,8 +6,11 @@ import {useEffect, useState} from 'react';  // React 훅들 import
 import {privateAxios} from '../api/axios';  // 경로는 프로젝트 구조에 맞게!
 
 import type {ShipmentPageOut} from "../types/shipment";  // 타입스크립트에서 사용할 데이터 타입 import
-import {Link} from "react-router-dom";  // 페이지 이동을 위한 Link 컴포넌트
-import * as React from "react";  // 타입 정의나 JSX 사용을 위해 전체 React import
+import {Link, useSearchParams} from "react-router-dom";  // 페이지 이동을 위한 Link 컴포넌트
+import React from "react";  // 타입 정의나 JSX 사용을 위해 전체 React import
+
+import Pagination from '../components/Pagination.tsx'
+
 
 export default function SharePostList() {
 
@@ -15,15 +18,20 @@ export default function SharePostList() {
     const [loading, setLoading] = useState(true); // 로딩 상태
     const [error, setError] = useState<string | null>(null);     // 에러 상태
     const [searchInput, setSearchInput] = useState(''); // input 필드에 입력되는 실시간 텍스트 상태
-    const [search, setSearch] = useState(''); // 실제로 검색을 수행할 키워드 상태
-    const [page, setPage] = useState(1); //페이지 번호 상태
+    const [searchParams, setSearchParams] = useSearchParams(); // 실제로 검색을 수행할 키워드 상태
+
+    const search = searchParams.get('search') || ''; // URL에서 'search' 파라미터를 추출(없으면 '' 빈 문자열)
+    const page = parseInt(searchParams.get('page') || '1', 10); // URL에서 'page' 파라미터를 추출 (없으면 1), (10은 10진수로 변환 하라는말)
 
     // 검색 버튼 혹은 Enter로 폼이 제출될 때 실행
     const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();  // 새로고침 방지
-        setPage(1);          // 검색 결과는 항상 1페이지부터 시작
-        setSearch(searchInput); // input에 있는 값을 실제 검색어 상태로 반영
-    }
+        setSearchParams({search: searchInput, page: '1'}); // 검색어를 반영하고 페이지는 항상 1로 만들어줌
+    } // 검색 버튼을 누르면 searchInput을 통해 검색 문자열을 반영해주고 페이지는 1로 돌아가서 시작
+
+    const handlePageChange = (pageNum: number) => {
+        setSearchParams({search, page: String(pageNum)}); // 검색어는 유지, 페이지만 변경해서 URL에 반영해줌
+    }; // search 파라미터는 기존 값을 유지, page 파라미터만 새 값으로 변경
 
     // 컴포넌트가 처음 마운트되거나, page 또는 search 값이 바뀔 때마다 게시글 목록을 불러오기
     useEffect(() => {
@@ -36,12 +44,12 @@ export default function SharePostList() {
                 setPosts(res.data);   // 게시글 목록 상태로 저장
             } catch (error) {
                 // axios가 제공하는 isAxiosError 함수로 체크
-                if (axios.isAxiosError(error)) {
-                    setError('Login failed: ' + (error.response?.data?.detail || error.message));
+                if (axios.isAxiosError(error)) { // Axios가 던지는 에러 객체는 일반 Error와는 조금 다르기 때문에 이 조건으로 먼저 확인
+                    setError('에러 : ' + (error.response?.data?.detail || error.message)); // detail이 없으면 일반적인 JavaScript 에러 메시지인 error.message를 보여줌
                 } else if (error instanceof Error) {
-                    setError('Login failed: ' + error.message);
+                    setError('에러 : ' + (error.message)); // Axios 에러가 아닌 일반적인 JavaScript 에러일 경우
                 } else {
-                    setError('Login failed: 알 수 없는 오류');
+                    setError('에러 : 알 수 없는 오류');
                 }
             } finally {
                 setLoading(false);  // 로딩 종료
@@ -86,31 +94,26 @@ export default function SharePostList() {
                                 </Link>
                                 <p className={styles['share-post-username']}>{post.creator?.username}</p>
                                 <span className={styles['share-post-date']}>{post.created_at}</span>
+                                <span className={styles['share-post-time']}>{post.file_paths}</span>{/*너무 어려움 나중에 다시*/}
                             </li>
                         ))}
                     </ul>
 
-                    <div>  {/* 페이지네이션 영역 */}
-                        <button
-                            onClick={() => setPage(prev => Math.max(1, prev - 1))} // 이전 페이지로 이동
-                            disabled={page === 1}  // 1페이지일 경우 비활성화
-                        >
-                            이전
-                        </button>
-                        <span>{page} / {posts ? Math.ceil(posts.total / 10) : 1}</span> {/* 현재 페이지 / 전체 페이지 */}
-                        <button
-                            onClick={() =>
-                                setPage(prev =>
-                                    posts && prev < Math.ceil(posts.total / 10) ? prev + 1 : prev
-                                )
-                            }
-                            disabled={posts ? page >= Math.ceil(posts.total / 10) : true} // 마지막 페이지이면 비활성화
-                        >
-                            다음
-                        </button>
+                    <div className={styles['page-button']}>  {/* 페이지네이션 영역 */}
+                        <Pagination //Pagination 컴포넌트에서 계산 하고 불러옴 설명은 Pagination 컴포넌트에 있음
+                            currentPage={page}
+                            totalPages={posts?.total_pages || 0}
+                            maxButtons={10}
+                            onPageChange={handlePageChange} // 콜백 함수 함수 자체를 자식에게 줌
+                            posts={posts!} //posts는 반드시 존재 한다는 타입스크립트 문법
+                        />
                     </div>
-                    <p>총 게시글 수: {posts?.total}</p> {/* 전체 게시글 수 표시 */}
-                    <p>현재 페이지: {posts?.page}</p>  {/* 현재 페이지 번호 표시 */}
+
+                    <div className={styles['page-information']}>
+                        <span>{page} / {posts ? Math.ceil(posts.total / 10) : 1}</span> {/* 현재 페이지 / 전체 페이지 */}
+                        <p>총 게시글 수: {posts?.total}</p> {/* 전체 게시글 수 표시 */}
+                        <p>현재 페이지: {posts?.page}</p>  {/* 현재 페이지 번호 표시 */}
+                    </div>
                 </div>
 
             )}

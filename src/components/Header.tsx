@@ -1,13 +1,16 @@
 // src/components/Headers.tsx
 import styles from './Header.module.css';
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {useEffect, useState} from "react";
 import Login from "../User/Login.tsx";
 import Signup from "../User/Signup.tsx";
 
 
+
 // 1. Header 라는 이름의 함수형 컴포넌트를 생성
 export default function Header() {
+
+    const navHome= useNavigate();
 
     const [isLoginOpen, setIsLoginOpen] = useState(false);
     const [isSignupOpen, setIsSignupOpen] = useState(false);
@@ -15,8 +18,10 @@ export default function Header() {
 
     // 로그아웃 핸들러
     const handleLogout = () => {
-        localStorage.removeItem("token"); // 토큰 삭제
+        localStorage.removeItem("access_token"); // 토큰 삭제
         setIsLoggedIn(false);             // 상태도 false로 전환(로그아웃 UI)
+        navHome('/')
+
     };
 
     // 처음 렌더링 될때나 새로고침 했을때 사용하는 용도
@@ -50,7 +55,7 @@ export default function Header() {
                     <div className={styles["board-group"]}>
                         <div className={styles["button-group"]}>
                             <button type={'button'} className={styles["header-btn"]}>
-                                <Link to={'/post'}>공유 게시판</Link>
+                                <Link to={'/posts'}>공유 게시판</Link>
                             </button>
                             <button type={'button'} className={styles["header-btn"]}>프로핏 게시판</button>
                             <button type={'button'} className={styles["header-btn"]}>프로핏 그래프 게시판</button>

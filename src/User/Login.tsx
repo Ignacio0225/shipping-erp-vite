@@ -53,9 +53,9 @@ export default function Login({isOpen, onClose, setIsLoggedIn}: LoginProps) {
             }
         } catch (error) {
             if (axios.isAxiosError(error)) {
-                setMessage('Login failed: ' + (error.response?.data?.detail || error.message));
+                setMessage(error.response?.data?.detail || error.message);
             } else if (error instanceof Error) {
-                setMessage('Login failed: ' + error.message);
+                setMessage(error.message);
             } else {
                 setMessage('Login failed: 알 수 없는 오류');
             }
