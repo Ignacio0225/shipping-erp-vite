@@ -1,7 +1,6 @@
 // src/NotFound.tsx
 
 export default function NotFound() {
-    console.log("NotFound 렌더됨")
     return (
         <div style={{ textAlign: 'center', marginTop: '50px' }}>
             <h1>404</h1>

@@ -7,9 +7,10 @@ import './global.css'
 
 import Home from "./pages/Home.tsx";
 import RootLayout from "./routes/RootLayout.tsx";
-import SharePostList from "./pages/SharePostList.tsx";
-import SharePost from "./pages/SharePost.tsx";
+import SharePostList from "./pages/Sharepost/SharePostList.tsx";
+import SharePost from "./pages/Sharepost/SharePost.tsx";
 import NotFound from "./NotFound.tsx";
+import SharePostUploadPage from "./pages/Sharepost/SharePostUpload.tsx";
 
 
 const router=createBrowserRouter([
@@ -20,6 +21,7 @@ const router=createBrowserRouter([
         children:[
             {path: '/', element: <Home/>,},
             {path: '/posts', element: <SharePostList/>,},
+            {path: '/posts/upload',element:<SharePostUploadPage/>},
             {path:'/posts/:ship_id',element:<SharePost/>,},
             {path:'*',element:<NotFound/>},
         ],

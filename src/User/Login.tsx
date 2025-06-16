@@ -1,4 +1,4 @@
-import {useState} from 'react' // React의 함수형 컴포넌트에서 상태 관리를 위해 useState를 import
+import React, {useState} from 'react' // React의 함수형 컴포넌트에서 상태 관리를 위해 useState를 import
 import {publicAxios} from '../api/axios' // axios 인스턴스를 import, API 호출에 사용
 import Modal from "../components/Modal";
 import axios from "axios"; // 커스텀 Modal 컴포넌트 import
@@ -22,7 +22,7 @@ export default function Login({isOpen, onClose, setIsLoggedIn}: LoginProps) {
     const [message, setMessage] = useState('');
 
     // 로그인 폼 제출 시 실행되는 함수(비동기)
-    const handleLogin = async (e: React.FormEvent) => {
+    const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault(); // 폼 제출시 새로고침을 막음(React SPA 특성)
 
         // 비밀번호에 숫자가 포함되어 있는지 검사 (정규표현식)
