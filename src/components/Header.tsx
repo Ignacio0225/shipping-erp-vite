@@ -34,44 +34,35 @@ export default function Header() {
     return (
 
         // 3. <header> 태그는 시멘틱 웹에서 '페이지의 헤더'임을 나타냄
-        <header className={styles.header}>
-            <div className={styles["board-group"]}>
-                <Link to={"/"}>
-                    <img src="/MsLogo_2.png" alt="명성해운 로고" id="MsLogo"/>
-                </Link>
-            </div>
+       <header className={styles.header}>
+  <div className={styles.logoArea}>
+    <Link to="/">
+      <img src="/MsLogo.png" alt="명성해운 로고" className={styles.logo} />
+    </Link>
+  </div>
 
-            <div className={styles["board-group"]}>
-                {!isLoggedIn ? (
-                    <div className={styles["board-group"]}>
-                        <button type={'button'} className={styles.login} onClick={() => setIsLoginOpen(true)}>
-                            로그인
-                        </button>
-                        <button type={'button'} className={styles.join} onClick={() => setIsSignupOpen(true)}>
-                            회원가입
-                        </button>
-                    </div>
-                ) : (
-                    <div className={styles["board-group"]}>
-                        <div className={styles["button-group"]}>
-                            <button type={'button'} className={styles["header-btn"]}>
-                                <Link to={'/posts'}>공유 게시판</Link>
-                            </button>
-                            <button type={'button'} className={styles["header-btn"]}>프로핏 게시판</button>
-                            <button type={'button'} className={styles["header-btn"]}>프로핏 그래프 게시판</button>
-                        </div>
-                        <div className={styles["button-group"]}>
-                            <button type={'button'} className={styles.logout} onClick={handleLogout}>로그아웃</button>
-                        </div>
-                    </div>
+  <div className={styles.menuArea}>
+    {!isLoggedIn ? (
+      <div className={styles.authButtons}>
+        <button className={styles.login} onClick={() => setIsLoginOpen(true)}>로그인</button>
+        <button className={styles.join} onClick={() => setIsSignupOpen(true)}>회원가입</button>
+      </div>
+    ) : (
+      <div className={styles.loggedIn}>
+        <div className={styles.navButtons}>
+          <button className={styles.navBtn}>
+            <Link to="/posts">공유 게시판</Link>
+          </button>
+          <button className={styles.navBtn}>프로핏 게시판</button>
+          <button className={styles.navBtn}>프로핏 그래프 게시판</button>
+        </div>
+        <button className={styles.logout} onClick={handleLogout}>로그아웃</button>
+      </div>
+    )}
+  </div>
 
-                )
-                }
-            </div>
-
-            {/* 로그인 모달은 필요할 때만 렌더 */}
-            <Login isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} setIsLoggedIn={setIsLoggedIn}/>
-            <Signup isOpen={isSignupOpen} onClose={() => setIsSignupOpen(false)}/>
-        </header>
+  <Login isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} setIsLoggedIn={setIsLoggedIn} />
+  <Signup isOpen={isSignupOpen} onClose={() => setIsSignupOpen(false)} />
+</header>
     )
 }

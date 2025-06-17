@@ -63,61 +63,54 @@ export default function SharePostList() {
     if (error) return <div>{error}</div>;        // 에러 메시지 UI 표시
 
     return (
-        <div className={styles['share-board-container']}>
-            <h2 className={styles['share-board-title']}>공유 게시판</h2>
+        <div className={styles['container']}>
+            <h2 className={styles['title']}>공유 게시판</h2>
             <button type={"button"}><Link to={'/posts/upload'}>글쓰기</Link></button>
             <form onSubmit={handleSearch}>  {/* 폼 제출 시 handleSearch 실행 */}
                 <input
                     type="text"
                     value={searchInput}  // 입력 필드에 searchInput 상태 연결
                     onChange={(e) => setSearchInput(e.target.value)} // 타이핑될 때마다 상태 업데이트
-                    // onKeyDown={(e) => { // 추가 동작을 하고 싶을 때 사용,자동완성 열기, 특정 키 눌렀을 때만 제출 방지 등
-                    //     if (e.key === 'Enter') {
-                    //         e.preventDefault();     // 기본 폼 제출 막고
-                    //         setSearch(searchInput); // 원하는 검색 동작 실행
-                    //     }
-                    // }}
                     placeholder="제목 또는 내용 검색"  // 사용자에게 보여지는 힌트 텍스트
-                    className={styles['share-search-input']} // 스타일은 아래 참고
+                    className={styles['searchInput']}
                 />
                 <button type={'submit'}>검색</button>
-                {/* 검색 버튼 클릭 시 폼 제출됨 */}
             </form>
             {posts?.items.length === 0 ? (  // 게시글이 없는 경우
                 <div>게시글이 없습니다.</div>
             ) : (
                 <div>
-                    <ul className={styles['share-post-list']}>
+                    <ul className={styles['postList']}>
                         {posts?.items.map(post => (
-                            <li key={post.id} className={styles['share-post-card']}>
+                            <li key={post.id} className={styles['postCard']}>
                                 <Link to={`/posts/${post.id}`}>  {/* 게시글 클릭 시 상세 페이지로 이동 */}
-                                    <h3 className={styles['share-post-title']}>{post.title}</h3>
+                                    <h3 className={styles['postTitle']}>{post.title}</h3>
                                 </Link>
-                                <p className={styles['share-post-username']}>{post.creator?.username}</p>
-                                <span className={styles['share-post-date']}>{post.created_at}</span>
-                                <span className={styles['share-post-time']}>{post.file_paths}</span>{/*너무 어려움 나중에 다시*/}
+                                <p className={styles['postUsername']}>{post.creator?.username}</p>
+                                <span className={styles['postDate']}>{post.created_at}</span>
+                                <span className={styles['postFilePaths']}>{post.file_paths}</span>{/*너무 어려움 나중에 다시*/}
                             </li>
                         ))}
                     </ul>
 
-                    <div className={styles['page-button']}>  {/* 페이지네이션 영역 */}
-                        <Pagination //Pagination 컴포넌트에서 계산 하고 불러옴 설명은 Pagination 컴포넌트에 있음
+                    <div className={styles['paginationContainer']}>  {/* 페이지네이션 영역 */}
+                        <Pagination
                             currentPage={page}
                             totalPages={posts?.total_pages || 0}
                             maxButtons={10}
-                            onPageChange={handlePageChange} // 콜백 함수 함수 자체를 자식에게 줌
-                            posts={posts!} //posts는 반드시 존재 한다는 타입스크립트 문법
+                            onPageChange={handlePageChange}
+                            posts={posts!}
                         />
                     </div>
 
-                    <div className={styles['page-information']}>
+                    <div className={styles['pageInfo']}>
                         <span>{page} / {posts ? Math.ceil(posts.total / 10) : 1}</span> {/* 현재 페이지 / 전체 페이지 */}
                         <p>총 게시글 수: {posts?.total}</p> {/* 전체 게시글 수 표시 */}
                         <p>현재 페이지: {posts?.page}</p>  {/* 현재 페이지 번호 표시 */}
                     </div>
                 </div>
-
             )}
         </div>
+
     );
 }

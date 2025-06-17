@@ -1,0 +1,81 @@
+.postFormWrap {
+    width: 100%;
+    max-width: 1200px; /* 기존보다 2배 넓게 (ex: 600 → 1200) */
+    margin: 80px auto 60px; /* 상단/하단 여백도 약간 더 */
+    padding: 48px; /* 내부 여백도 살짝 넓게 */
+    background-color: #1e1e1e;
+    color: #f0f0f0;
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+}
+
+
+@media (max-width: 768px) {
+    .postFormWrap {
+        padding: 24px 16px;
+        margin: 40px 16px 24px;
+    }
+}
+
+
+/* 제목 */
+.title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 32px;
+    color: #ffffff;
+}
+
+/* 폼 구조 */
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* 라벨 */
+.label {
+    font-size: 0.95rem;
+    color: #cccccc;
+}
+
+/* input/textarea 스타일 */
+.input,
+.textarea,
+.fileInput {
+    background-color: #2a2a2a;
+    border: 1px solid #444;
+    border-radius: 8px;
+    padding: 14px;
+    font-size: 1rem;
+    color: #f9f9f9;
+    transition: border-color 0.2s;
+}
+
+.input:focus,
+.textarea:focus {
+    border-color: #2193b0;
+    outline: none;
+}
+
+/* 제출 버튼 */
+.submitBtn {
+    background-color: #2193b0;
+    color: white;
+    font-size: 1rem;
+    padding: 14px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.submitBtn:hover {
+    background-color: #197a92;
+}
+
+.submitBtn:disabled {
+    background-color: #555;
+    cursor: not-allowed;
+}

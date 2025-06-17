@@ -1,91 +1,78 @@
 .header {
-    display: flex; /* 가로 레이아웃 */
-    align-items: center; /* 세로 중앙정렬 */
-    justify-content: space-between; /* 좌우 분리 */
-    padding: 50px 32px;
-    height: 20px;
-    background: linear-gradient(90deg, #100101 0%, #dbe4e7 100%); /* 블루-민트 그라데이션 */
-    color: #fff;
-    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.07);
+  background-color: #fff8f8; /* 다크 헤더 */
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 32px;
+  height: 64px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
-#MsLogo {
-    height: 44px !important;   /* !important로 강제 적용 */
-    width: auto;               /* 비율 유지하며 높이만 고정 */
-    display: block;
+.logoArea img.logo {
+  height: 60px;
+  object-fit: contain;
+  display: block;
 }
 
-
-.button-group {
-    display: flex;
-    gap: 12px; /* 버튼 간격 */
-    align-items: center;
+.menuArea {
+  display: flex;
+  align-items: center;
+  gap: 20px;
 }
 
-.board-group {
-    display: flex;
-    gap: 15px; /* 게시판 버튼 간격 */
-    margin-right: 50px; /* 게시판 버튼 우측 여백 */
+.authButtons,
+.loggedIn {
+  display: flex;
+  align-items: center;
+  gap: 14px;
 }
 
-.header-btn {
-    background: #fff; /* 버튼 배경 흰색 */
-    color: #2193b0; /* 글자색 파란색 */
-    border: none;
-    border-radius: 7px;
-    padding: 8px 20px;
-    font-size: 1rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background 0.22s, color 0.22s;
-    box-shadow: 0 2px 8px rgba(30, 80, 150, 0.06);
+/* 공통 네비 버튼 */
+.navBtn {
+  background: none;
+  border: none;
+  color: #ccc;
+  font-size: 0.9rem;
+  padding: 6px 10px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.navBtn:hover {
+  color: #f44;
 }
 
-.header-btn:hover {
-    background: #2193b0; /* 호버시 파란색 */
-    color: #fff;
-}
-
-
-
+/* 로그인/회원가입 */
+.login,
 .join {
-    background: #25c8d7; /* 버튼 배경 흰색 */
-    color: #030303; /* 글자색 파란색 */
-    border: none;
-    border-radius: 7px;
-    padding: 8px 20px;
-    font-size: 1rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background 0.22s, color 0.22s;
-    box-shadow: 0 2px 8px rgba(30, 80, 150, 0.06);
+  background-color: #a29f9f;
+  color: #000;
+  border: none;
+  border-radius: 16px;
+  padding: 6px 14px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.login:hover,
+.join:hover {
+  background-color: #ccc;
 }
 
-
-
-.login {
-    background: #54f359; /* 버튼 배경 흰색 */
-    color: #030303; /* 글자색 파란색 */
-    border: none;
-    border-radius: 7px;
-    padding: 8px 20px;
-    font-size: 1rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background 0.22s, color 0.22s;
-    box-shadow: 0 2px 8px rgba(30, 80, 150, 0.06);
-}
-
-
+/* 로그아웃 버튼 강조 */
 .logout {
-    background: #b75c5c; /* 버튼 배경 흰색 */
-    color: #030303; /* 글자색 파란색 */
-    border: none;
-    border-radius: 7px;
-    padding: 8px 20px;
-    font-size: 1rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background 0.22s, color 0.22s;
-    box-shadow: 0 2px 8px rgba(30, 80, 150, 0.06);
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 16px;
+  padding: 6px 14px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.logout:hover {
+  background-color: #c0392b;
 }
