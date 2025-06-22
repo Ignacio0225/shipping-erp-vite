@@ -73,7 +73,7 @@ export default function SharePostUploadPage() {
             // 에러 처리 (axios 에러인지 일반 에러인지 구분)
             if (axios.isAxiosError(error)) {
                 // axios 에러일 경우, 서버에서 전달된 에러 메시지 있으면 사용, 없으면 기본 메시지
-                setError(error.response?.data?.error || error.message);
+                setError(error.response?.data?.detail || error.message);
             } else if (error instanceof Error) {
                 // 일반 JS 에러일 경우 메시지 표시
                 setError(error.message);

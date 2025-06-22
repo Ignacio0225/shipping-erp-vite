@@ -1,6 +1,6 @@
 // src/components/Headers.tsx
 import styles from './Header.module.css';
-import {Link, useNavigate, useLocation} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {useEffect, useState} from "react";
 import Login from "../User/Login.tsx";
 import Signup from "../User/Signup.tsx";
@@ -10,22 +10,10 @@ import Signup from "../User/Signup.tsx";
 export default function Header() {
 
     const nav = useNavigate();
-    const location = useLocation(); // 현재 경로를 가져오기 위해 추가
 
     const [isLoginOpen, setIsLoginOpen] = useState(false);
     const [isSignupOpen, setIsSignupOpen] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-    // 현재 페이지 확인 함수
-    const getCurrentPage = () => {
-        const path = location.pathname;
-        if (path.includes('/posts')) return 'share';
-        if (path.includes('/profit-graph')) return 'profit-graph';
-        if (path.includes('/profit')) return 'profit';
-        return '';
-    };
-
-    const currentPage = getCurrentPage();
 
     // 로그아웃 핸들러
     const handleLogout = () => {
@@ -60,25 +48,11 @@ export default function Header() {
                 ) : (
                     <div className={styles.loggedIn}>
                         <div className={styles.navButtons}>
-                            <button 
-
-                                onClick={()=>nav('/posts')}  
-                                className={`${styles.navBtn} ${currentPage === 'share' ? styles.active : ''}`}
-                            >
+                            <button type={'button'} onClick={()=>nav('/posts')}  className={styles.navBtn}>
                                 공유게시판
                             </button>
-                            <button
-                                className={`${styles.navBtn} ${currentPage === 'profit' ? styles.active : ''}`}
-                                onClick={()=>nav('/profit')}
-                            >
-                                프로핏 게시판
-                            </button>
-                            <button
-                                className={`${styles.navBtn} ${currentPage === 'profit-graph' ? styles.active : ''}`}
-                                onClick={()=>nav('/profit-graph')}
-                            >
-                                프로핏 그래프 게시판
-                            </button>
+                            <button className={styles.navBtn}>프로핏 게시판</button>
+                            <button className={styles.navBtn}>프로핏 그래프 게시판</button>
                         </div>
                         <button className={styles.logout} onClick={handleLogout}>로그아웃</button>
                     </div>

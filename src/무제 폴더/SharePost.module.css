@@ -1,0 +1,18 @@
+.container {
+    width: 100%;
+    margin: 40px auto;
+    padding: 24px;
+    background-color: #1e1e1e;
+    color: #f0f0f0;
+    min-height: 100vh;
+    box-sizing: border-box;
+    font-family: 'Noto Sans KR', sans-serif;
+    display: flex;
+    flex-direction: column;
+}
+
+.postTitle {
+    font-size: 1.2rem;
+    margin: 0 0 6px;
+    color: #69c0ff;
+}

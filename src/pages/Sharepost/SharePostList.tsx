@@ -6,13 +6,15 @@ import {useEffect, useState} from 'react';  // React 훅들 import
 import {privateAxios} from '../../api/axios.ts';  // 경로는 프로젝트 구조에 맞게!
 
 import type {ShipmentPageOut} from "../../types/shipment.ts";  // 타입스크립트에서 사용할 데이터 타입 import
-import {Link, useSearchParams} from "react-router-dom";  // 페이지 이동을 위한 Link 컴포넌트
+import {useNavigate, useSearchParams} from "react-router-dom";  // useSearchParams = 현재 파라미터를 받아서 URL에 보여주기위함
 import React from "react";  // 타입 정의나 JSX 사용을 위해 전체 React import
 
 import Pagination from '../../components/Pagination.tsx'
 
 
 export default function SharePostList() {
+
+    const nav = useNavigate();
 
     const [posts, setPosts] = useState<ShipmentPageOut | null>(null);     // 게시글 배열 상태
     const [loading, setLoading] = useState(true); // 로딩 상태
@@ -22,6 +24,30 @@ export default function SharePostList() {
 
     const search = searchParams.get('search') || ''; // URL에서 'search' 파라미터를 추출(없으면 '' 빈 문자열)
     const page = parseInt(searchParams.get('page') || '1', 10); // URL에서 'page' 파라미터를 추출 (없으면 1), (10은 10진수로 변환 하라는말)
+
+
+    const getFileName = (path: string) => {
+        const fullName = path.split('/').pop() || 'unknown_file';
+        const parts = fullName.split('_');
+        return parts.length > 1 ? parts.slice(1).join('_') : fullName;
+    }
+
+    const formatDate = (isoString: string) => {
+        const utcDate = new Date(isoString);  // UTC 기준 Date 객체 생성
+        // 9시간 = 9 * 60 * 60 * 1000 밀리초
+        const kstDate = new Date(utcDate.getTime() + 9 * 60 * 60 * 1000); // 9시간 더해줌(시간,밀리초 계산해야함)
+
+        return kstDate.toLocaleString('ko-KR', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false,
+            timeZone: 'Asia/Seoul',
+        }).replace(/\. /g, '-').replace('.', '');  // "2025. 06. 21. 09:30" → "2025-06-21 09:30"
+    };
+
 
     // 검색 버튼 혹은 Enter로 폼이 제출될 때 실행
     const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
@@ -56,44 +82,51 @@ export default function SharePostList() {
             }
         }
 
-        fetchPosts(); // 비동기 함수 실행
+
+        void fetchPosts(); // 비동기 함수 실행
     }, [page, search]); // page 또는 search 값이 변경될 때마다 재실행됨
 
     if (loading) return <div>로딩 중...</div>;  // 로딩 중 UI 표시
     if (error) return <div>{error}</div>;        // 에러 메시지 UI 표시
 
     return (
-        <div className={styles['container']}>
-            <h2 className={styles['title']}>공유 게시판</h2>
-            <button type={"button"}><Link to={'/posts/upload'}>글쓰기</Link></button>
-            <form onSubmit={handleSearch}>  {/* 폼 제출 시 handleSearch 실행 */}
-                <input
-                    type="text"
-                    value={searchInput}  // 입력 필드에 searchInput 상태 연결
-                    onChange={(e) => setSearchInput(e.target.value)} // 타이핑될 때마다 상태 업데이트
-                    placeholder="제목 또는 내용 검색"  // 사용자에게 보여지는 힌트 텍스트
-                    className={styles['searchInput']}
-                />
-                <button type={'submit'}>검색</button>
-            </form>
+        <div className={styles.container}>
+            <h2 className={styles.title}>공유 게시판</h2>
+            <div className={styles.searchAndUpload}>
+                <form onSubmit={handleSearch}>  {/* 폼 제출 시 handleSearch 실행 */}
+                    <input
+                        type="text"
+                        value={searchInput}  // 입력 필드에 searchInput 상태 연결
+                        onChange={(e) => setSearchInput(e.target.value)} // 타이핑될 때마다 상태 업데이트
+                        placeholder="제목 또는 내용 검색"  // 사용자에게 보여지는 힌트 텍스트
+                        className={styles.searchInput}
+                    />
+                    <button type={'submit'}>검색</button>
+                </form>
+                <button type={"button"} onClick={() => nav('/posts/upload')}>글쓰기</button>
+            </div>
             {posts?.items.length === 0 ? (  // 게시글이 없는 경우
                 <div>게시글이 없습니다.</div>
             ) : (
                 <div>
-                    <ul className={styles['postList']}>
+                    <ul className={styles.postList}>
                         {posts?.items.map(post => (
-                            <li key={post.id} className={styles['postCard']}>
-                                <Link to={`/posts/${post.id}`}>  {/* 게시글 클릭 시 상세 페이지로 이동 */}
-                                    <h3 className={styles['postTitle']}>{post.title}</h3>
-                                </Link>
-                                <p className={styles['postUsername']}>{post.creator?.username}</p>
-                                <span className={styles['postDate']}>{post.created_at}</span>
-                                <span className={styles['postFilePaths']}>{post.file_paths}</span>{/*너무 어려움 나중에 다시*/}
+                            <li key={post.id} className={styles.postCard} onClick={() => nav(`/posts/${post.id}`)}>
+                                <h3 className={styles.postTitle}>제목 : {post.title}</h3>{/* 게시글 클릭 시 상세 페이지로 이동 */}
+                                <p className={styles.postUsername}>작성자 : {post.creator?.username}</p>
+                                <span className={styles.postDate}>작성일 : {formatDate(post.created_at)}</span>
+                                <span className={styles.postDate}>수정일 (미완성 작성일로 대체) : {formatDate(post.created_at)}</span>
+                                <ul>
+                                    {post.file_paths?.map((filePath, index) => (
+                                        <li key={index}
+                                            className={styles.postFilePaths}>첨부파일 {index + 1} : {getFileName(filePath)}</li>
+                                    ))}
+                                </ul>
                             </li>
                         ))}
                     </ul>
 
-                    <div className={styles['paginationContainer']}>  {/* 페이지네이션 영역 */}
+                    <div className={styles.paginationContainer}>  {/* 페이지네이션 영역 */}
                         <Pagination
                             currentPage={page}
                             totalPages={posts?.total_pages || 0}
@@ -103,7 +136,7 @@ export default function SharePostList() {
                         />
                     </div>
 
-                    <div className={styles['pageInfo']}>
+                    <div className={styles.pageInfo}>
                         <span>{page} / {posts ? Math.ceil(posts.total / 10) : 1}</span> {/* 현재 페이지 / 전체 페이지 */}
                         <p>총 게시글 수: {posts?.total}</p> {/* 전체 게시글 수 표시 */}
                         <p>현재 페이지: {posts?.page}</p>  {/* 현재 페이지 번호 표시 */}

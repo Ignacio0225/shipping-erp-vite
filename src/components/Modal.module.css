@@ -1,5 +1,4 @@
-/* Modal.module.css */
-
+/* 모달 배경 */
 .modal-backdrop {
     position: fixed;
     top: 0;
@@ -7,11 +6,11 @@
     width: 100vw;
     height: 100vh;
     z-index: 2000;
-    background: rgba(40, 40, 40, 0.4); /* 회색+반투명 */
+    background: rgba(0, 0, 0, 0.5);
     display: flex;
     align-items: center;
     justify-content: center;
-    animation: fadeInBackdrop 0.2s;
+    animation: fadeInBackdrop 0.3s ease;
 }
 
 @keyframes fadeInBackdrop {
@@ -23,57 +22,188 @@
     }
 }
 
+/* 모달 컨텐츠 */
 .modal-content {
     display: flex;
     flex-direction: column;
-    background: #a69d9d;
-    padding: 2rem 1.5rem;
-    border-radius: 14px;
-    box-shadow: 0 4px 32px rgba(0, 0, 0, 0.23);
-    min-width: 320px;
+    background: linear-gradient(135deg, #ffffff, #f8f9fa);
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    min-width: 350px;
     max-width: 95vw;
-    min-height: 150px;
     position: relative;
-    animation: fadeInModal 0.2s;
+    animation: fadeInModal 0.3s ease;
+    border: 1px solid rgba(0, 0, 0, 0.1);
 }
-
-.modal-content form {
-    display: flex;               /* 플렉스 컨테이너로 지정 */
-    flex-direction: column;      /* 세로(수직) 방향 정렬 */
-    gap: 0.5rem;                   /* 각 input, label, button 사이 여백 */
-    align-items: stretch;        /* 너비를 form 영역에 맞춰 늘림(좌우 정렬) */
-}
-
-
-.modal-content form button {
-    margin-top:1rem;
-    background-color: #e8d48b;
-}
-
 
 @keyframes fadeInModal {
     from {
         opacity: 0;
-        transform: scale(0.97);
+        transform: scale(0.95) translateY(-20px);
     }
     to {
         opacity: 1;
-        transform: scale(1);
+        transform: scale(1) translateY(0);
     }
 }
 
+/* 모달 제목 */
+.modal-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #212529;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+/* 폼 스타일 */
+.modal-content form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    align-items: stretch;
+}
+
+/* 입력 필드 그룹 */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.form-label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #495057;
+    margin-bottom: 0.2rem;
+}
+
+.form-input {
+    background: #ffffff;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-size: 0.9rem;
+    color: #212529;
+    transition: all 0.2s ease;
+    outline: none;
+}
+
+.form-input:focus {
+    border-color: #000;
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+}
+
+.form-input::placeholder {
+    color: #adb5bd;
+}
+
+/* 버튼 스타일 */
+.modal-content form button {
+    background: linear-gradient(135deg, #000, #333);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 12px 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-top: 0.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.modal-content form button:hover {
+    background: linear-gradient(135deg, #333, #555);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.modal-content form button:active {
+    transform: translateY(0);
+}
+
+/* 보조 버튼 (취소 등) */
+.secondary-btn {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef) !important;
+    color: #6c757d !important;
+    border: 1px solid #dee2e6 !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
+}
+
+.secondary-btn:hover {
+    background: linear-gradient(135deg, #e9ecef, #dee2e6) !important;
+    color: #495057 !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* 닫기 버튼 */
 .modal-close-btn {
     position: absolute;
     top: 12px;
-    right: 18px;
+    right: 16px;
     border: none;
-    background: none;
+    background: rgba(0, 0, 0, 0.1);
+    color: #6c757d;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-size: 1rem;
-    color: #f35b5b;
     cursor: pointer;
-    transition: color 0.15s;
+    transition: all 0.2s ease;
 }
 
 .modal-close-btn:hover {
-    color: #383a37;
+    background: rgba(0, 0, 0, 0.2);
+    color: #495057;
+    transform: scale(1.1);
+}
+
+/* 링크 스타일 */
+.modal-link {
+    color: #000;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.modal-link:hover {
+    color: #333;
+    text-decoration: underline;
+}
+
+/* 모달 하단 텍스트 */
+.modal-footer {
+    text-align: center;
+    margin-top: 1rem;
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+    .modal-content {
+        min-width: 300px;
+        padding: 1.5rem;
+        margin: 1rem;
+    }
+    
+    .modal-title {
+        font-size: 1.2rem;
+    }
+    
+    .form-input {
+        padding: 8px 10px;
+        font-size: 0.85rem;
+    }
+    
+    .modal-content form button {
+        padding: 10px 16px;
+        font-size: 0.85rem;
+    }
 }

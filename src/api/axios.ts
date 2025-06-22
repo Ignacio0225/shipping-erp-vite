@@ -55,12 +55,25 @@ privateAxios.interceptors.request.use(
     (error) => Promise.reject(error)
 );
 
+privateAxios.interceptors.response.use(
+    (response) => response,
+
+    (error) => {
+        if(error.response.status === 401) {
+            localStorage.removeItem('access_token');
+            alert('세션이 만료 되었습니다. 다시 로그인 해주세요');
+            window.location.href=('/');
+        }
+    }
+);
+
 
 // 11. 만들어진 axios 인스턴스를 기본값으로 내보냄.
 // (다른 파일에서 import 해서 사용)
 
 
 export const privateMultiAxios = axios.create({
+
     // 3. baseURL: 앞으로 모든 API 요청이 이 주소를 기준으로 보냄.
     //    (FastApi 서버 주소/포트에 맞춰야함. 예: http://localhost:8000)
     baseURL: 'http://localhost:8000',
@@ -93,6 +106,18 @@ privateMultiAxios.interceptors.request.use(
     // 10. 만약 인터셉터(혹은 이전 단계)에서 에러가 나면
     //     - 그 에러를 Promise.reject(error)로 넘겨서, catch문 등에서 처리할 수 있게 함
     (error) => Promise.reject(error)
+);
+
+privateMultiAxios.interceptors.response.use(
+    (response) => response,
+
+    (error) => {
+        if(error.response.status === 401) {
+            localStorage.removeItem('access_token');
+            alert('세션이 만료 되었습니다. 다시 로그인 해주세요');
+            window.location.href=('/');
+        }
+    }
 );
 
 

@@ -1,11 +1,13 @@
-// Pagination 컴포넌트의 Props(매개변수) 타입 정의
+// src/component/Pagination.tsx
+import styles from './Pagination.module.css'
 
+// Pagination 컴포넌트의 Props(매개변수) 타입 정의
 import type {ShipmentPageOut} from "../types/shipment.ts";
 
 interface Props {
     currentPage: number; // 현재 활성화된 페이지 번호
     totalPages: number;  // 전체 페이지 수
-    onPageChange: (page: number) => void; // 페이지 버튼을 클릭했을 때 호출할 함수 (부모가 넘겨줌)
+    onPageChange: (pageNum: number) => void; // 페이지 버튼을 클릭했을 때 호출할 함수 (부모가 넘겨줌)
     maxButtons?: number; // 한 번에 보여줄 페이지 버튼 수 (생략 가능)
     posts:ShipmentPageOut
 }
@@ -46,8 +48,9 @@ export default function Pagination({
 
     // 실제로 렌더링할 부분
     return (
-        <div>
+        <>
             <button
+                className={styles.paginationBtn}
                 onClick={() => onPageChange(Math.max(1, currentPage - 1))}
                 disabled={currentPage === 1}  // 1페이지일 경우 비활성화
             >
@@ -56,6 +59,7 @@ export default function Pagination({
             {/* 계산된 페이지 번호 배열을 기반으로 버튼 렌더링 */}
             {getPageRange().map((pageNum) => (
                 <button
+                    className={styles.paginationBtn}
                     key={pageNum}                      // 리액트가 리스트를 인식하기 위한 고유 key
                     onClick={() => onPageChange(pageNum)} // 버튼 클릭 시 부모에게서 받은 함수를 인수를 적용시켜 작동함
                     disabled={pageNum === currentPage}     // 현재 페이지인 경우 비활성화
@@ -64,6 +68,7 @@ export default function Pagination({
                 </button>
             ))}
             <button
+                className={styles.paginationBtn}
                 onClick={() =>
                     onPageChange(
                         posts && currentPage < Math.ceil(posts.total / 10)
@@ -75,7 +80,7 @@ export default function Pagination({
             >
                 다음
             </button>
-        </div>
+        </>
     );
 }
 

@@ -4,17 +4,43 @@ import axios from 'axios';
 import type {Shipment} from '../../types/shipment.ts'
 import {useEffect, useState} from "react";
 import privateAxios from "../../api/axios.ts";
-import {Navigate, useParams} from "react-router-dom";
+import {Navigate, useNavigate, useParams} from "react-router-dom";
+import styles from "./SharePost.module.css";
+
+import SharePostFileDownload from './SharePostFileDownload.tsx';
 
 
 export default function SharePost() {
 
-    const {ship_id} = useParams<{ ship_id: string }>()
+    const nav = useNavigate();
 
+    const {ship_id} = useParams<{ ship_id: string }>()
 
     const [post, setPost] = useState<Shipment | null>(null);     // 게시글 배열 상태
     const [loading, setLoading] = useState(true); // 로딩 상태
     const [error, setError] = useState<string | null>(null);     // 에러 상태
+
+
+    const handleDelete = async () => {
+        const ok = window.confirm('정말 삭제하시겠습니까?'); // 알림창
+        if (!ok) {
+            // 사용자가 취소를 눌렀을 경우
+            return;
+        }
+        try {
+            await privateAxios.delete<Shipment>(`api/posts/shipments/${ship_id}`)
+            nav('/posts', {replace: true});
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                setError(error.response?.data?.detail || error.message);
+            } else if (error instanceof Error) {
+                setError(error.message);
+            } else {
+                // 알 수 없는 에러 처리
+                setError("알 수 없는 오류");
+            }
+        }
+    }
 
 
     useEffect(() => {
@@ -41,25 +67,35 @@ export default function SharePost() {
             }
         }
 
-        fetchPost();
+        void fetchPost();
 
     }, [ship_id]);
 
-    if (loading) {return <div>로딩 중...</div>}
+    if (loading) {
+        return <div>로딩 중...</div>
+    }
     if (post === null && !loading) {
-    return <Navigate to={'/404'} replace={true} />;
-}
+        return <Navigate to={'/404'} replace={true}/>;
+    }
     if (error) return <div>{error}</div>;
 
     return (
-        <div>
-            <h2>게시글</h2>
+        <div className={styles.container}>
             {post ? (
                 <div>
                     <div>
-                        <h2>{post.title}</h2>
-                        <p>{post.creator?.username}</p>
-                        <p>{post.description}</p>
+                        <div className={styles.textContainer}>
+                            <h2 className={styles.postTitle} >제목 : {post.title}</h2>
+                            <h3>작성자 : {post.creator?.username}</h3>
+                            <p>내용 : </p>
+                            <p>{post.description}</p>
+                        </div>
+                        <div className={styles.btnContainer}>
+                            <button type={'button'} onClick={() => nav(`/posts/${post.id}/update`)}> 수정</button>
+                            <button type={'button'} onClick={() => handleDelete()}>삭제</button>
+                            <button type={'button'} onClick={() => nav(-1)}>목록</button>
+                        </div>
+                        <SharePostFileDownload ship_id={post.id} filePaths={post.file_paths}/>
                     </div>
                 </div>
             ) : (

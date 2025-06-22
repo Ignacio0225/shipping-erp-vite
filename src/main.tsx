@@ -11,6 +11,7 @@ import SharePostList from "./pages/Sharepost/SharePostList.tsx";
 import SharePost from "./pages/Sharepost/SharePost.tsx";
 import NotFound from "./NotFound.tsx";
 import SharePostUploadPage from "./pages/Sharepost/SharePostUpload.tsx";
+import SharePostUpdate from "./pages/Sharepost/SharePostUpdate.tsx";
 
 
 const router=createBrowserRouter([
@@ -23,6 +24,7 @@ const router=createBrowserRouter([
             {path: '/posts', element: <SharePostList/>,},
             {path: '/posts/upload',element:<SharePostUploadPage/>},
             {path:'/posts/:ship_id',element:<SharePost/>,},
+            {path:'/posts/:ship_id/update',element:<SharePostUpdate/>,},
             {path:'*',element:<NotFound/>},
         ],
     },

@@ -1,0 +1,86 @@
+.header {
+    background-color: #fff8f8; /* 다크 헤더 */
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 32px;
+    height: 64px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.logoArea img.logo {
+    height: 60px;
+    object-fit: contain;
+    display: block;
+}
+
+.menuArea {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.authButtons,
+.loggedIn {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+/* 공통 네비 버튼 */
+.navBtn {
+    background: none;
+    border: none;
+    color: #ccc;
+    font-size: 0.9rem;
+    padding: 6px 10px;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.navBtn a {
+    text-decoration: none;
+}
+
+.navBtn:hover {
+    color: #f44;
+    cursor: pointer;
+}
+
+/* 로그인/회원가입 */
+.login,
+.join {
+    background-color: #a29f9f;
+    color: #000;
+    border: none;
+    border-radius: 16px;
+    padding: 6px 14px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.login:hover,
+.join:hover {
+    background-color: #ccc;
+}
+
+/* 로그아웃 버튼 강조 */
+.logout {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 16px;
+    padding: 6px 14px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.logout:hover {
+    background-color: #c0392b;
+}
