@@ -26,12 +26,14 @@ export default function SharePostList() {
     const page = parseInt(searchParams.get('page') || '1', 10); // URL에서 'page' 파라미터를 추출 (없으면 1), (10은 10진수로 변환 하라는말)
 
 
+    // 파일 이름 uuid 없애고 보여주는 로직
     const getFileName = (path: string) => {
         const fullName = path.split('/').pop() || 'unknown_file';
         const parts = fullName.split('_');
         return parts.length > 1 ? parts.slice(1).join('_') : fullName;
     }
 
+    //시간을 내가 보고싶은대로 설정하는 방법 (utc로 기준잡았기때문에 한국시간으로 맞춰줌)
     const formatDate = (isoString: string) => {
         const utcDate = new Date(isoString);  // UTC 기준 Date 객체 생성
         // 9시간 = 9 * 60 * 60 * 1000 밀리초

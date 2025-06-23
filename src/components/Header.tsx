@@ -16,7 +16,7 @@ export default function Header() {
     const [isSignupOpen, setIsSignupOpen] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-    // 현재 페이지 확인 함수
+    // 현재 페이지 확인 함수 (페이지 이름을 가져오는법)
     const getCurrentPage = () => {
         const path = location.pathname;
         if (path.includes('/posts')) return 'share';
@@ -62,7 +62,8 @@ export default function Header() {
                         <div className={styles.navButtons}>
                             <button 
 
-                                onClick={()=>nav('/posts')}  
+                                onClick={()=>nav('/posts')}
+                                // currentPage 는 /페이지이름 에 따라 active css 적용을 위함
                                 className={`${styles.navBtn} ${currentPage === 'share' ? styles.active : ''}`}
                             >
                                 공유게시판

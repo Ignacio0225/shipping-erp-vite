@@ -9,10 +9,11 @@ import styles from './SharePostUpload.module.css'
 export default function SharePostUploadPage() {
 
     const nav = useNavigate()
-    const navBack = useNavigate()
     const [posts, setPosts] = useState<Partial<Shipment> | null>(null);  //shipment type 에서 필요한거만 가져와서 쓰기 위해
     const [files, setFiles] = useState<File[]>([]); // 파일 업로드는 따로 상태 관리 타입은 FileList 여러개(리스트로) 받아오기 위함
     const [error, setError] = useState<string | null>(null);     // 에러 상태
+
+
     const [upLoading, setUploading] = useState(false);
 
 
@@ -22,7 +23,7 @@ export default function SharePostUploadPage() {
 
         const filesArray = Array.from(e.target.files); // 여기서 null 아님 확실하니 에러 없음
 
-        setFiles(prev => [...(prev??[]), ...filesArray]);
+        setFiles(prev => [...(prev ?? []), ...filesArray]);
     };
 
     // 특정 파일 제거 함수
@@ -31,7 +32,7 @@ export default function SharePostUploadPage() {
     };
 
     const goBack = () => {
-        navBack(-1)
+        nav(-1)
     }
 
     const handleUpload = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -47,6 +48,10 @@ export default function SharePostUploadPage() {
             if (posts?.title) formData.append("title", posts?.title || '');
             // description이 있으면 추가
             if (posts?.description) formData.append("description", posts?.description || '');
+
+            if (posts?.type_category?.title) formData.append("type_category", posts?.type_category?.title || '');
+
+            if (posts?.region_category?.title) formData.append("region_category", posts?.region_category?.title || '');
 
             // 파일이 선택된 경우
             if (files) {
@@ -92,6 +97,9 @@ export default function SharePostUploadPage() {
             <h2 className={styles.title}>게시글 작성</h2>
             <form onSubmit={handleUpload} className={styles.form}>
                 <label htmlFor="title" className={styles.label}>Title</label>
+                <div>
+                {/*    여기에 카테고리 넣*/}
+                </div>
                 <input
                     name="title"
                     type="text"
@@ -105,7 +113,6 @@ export default function SharePostUploadPage() {
                     maxLength={100}
                     className={styles.input}
                 />
-
                 <label htmlFor="description" className={styles.label}>Description</label>
                 <textarea
                     name="description"
