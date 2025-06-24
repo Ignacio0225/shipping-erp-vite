@@ -63,7 +63,7 @@ export default function SharePostList() {
 
     // 컴포넌트가 처음 마운트되거나, page 또는 search 값이 바뀔 때마다 게시글 목록을 불러오기
     useEffect(() => {
-        async function fetchPosts() {
+        const fetchPosts= async () => {
             try {
                 setLoading(true);  // 로딩 시작
                 const res = await privateAxios.get<ShipmentPageOut>(

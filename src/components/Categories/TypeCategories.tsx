@@ -1,21 +1,26 @@
-import {useEffect, useState} from "react";
-import type {TypeCategory} from "../types/category.ts";
-import privateAxios from "../api/axios.ts";
+import React, {useEffect, useState} from "react";
+import type {Category} from "../../types/category.ts";
+import privateAxios from "../../api/axios.ts";
 import axios from "axios";
 
 
 
+interface CategoryProps {
+    onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+    value: string;
+}
 
-export function TypeCategories() {
-    const [typeCategories, setTypeCategories] = useState<TypeCategory[]>([]);
-    const [selectedCategoryId, setSelectedCategoryId] = useState<number | "">("");
+
+export default function TypeCategories({onChange,value}:CategoryProps) {
+    const [typeCategories, setTypeCategories] = useState<Category[]>([]);
     // const [regionCategories, setRegionCategories] = useState<Partial<Shipment>|null>(null);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        async function fetchCategories() {
+        const fetchCategories= async () => {
             try {
-                const res = await privateAxios.get<TypeCategory[]>(`/api/category/type/`)
+                const res = await privateAxios.get<Category[]>(`/api/category/type/`)
+                console.log(res)
                 setTypeCategories(res.data);
             } catch (error) {
                 if (axios.isAxiosError(error)) {
@@ -40,9 +45,11 @@ export function TypeCategories() {
 
 
     return (
+        <>
         <select
-            value={selectedCategoryId}
-            onChange={(e) => setSelectedCategoryId(Number(e.target.value))}
+            name="type_category"
+            value={value}
+            onChange={onChange}
             required
         >
             <option value="">카테고리 선택</option>
@@ -52,5 +59,6 @@ export function TypeCategories() {
                 </option>
             ))}
         </select>
+            </>
     )
 }

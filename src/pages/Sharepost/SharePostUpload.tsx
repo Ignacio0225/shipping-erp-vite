@@ -4,6 +4,8 @@ import {privateMultiAxios} from "../../api/axios.ts";
 import {useNavigate} from "react-router-dom";
 import axios from "axios";
 import styles from './SharePostUpload.module.css'
+import TypeCategories from "../../components/Categories/TypeCategories.tsx";
+import RegionCategories from "../../components/Categories/RegionCategories.tsx";
 
 
 export default function SharePostUploadPage() {
@@ -12,10 +14,13 @@ export default function SharePostUploadPage() {
     const [posts, setPosts] = useState<Partial<Shipment> | null>(null);  //shipment type 에서 필요한거만 가져와서 쓰기 위해
     const [files, setFiles] = useState<File[]>([]); // 파일 업로드는 따로 상태 관리 타입은 FileList 여러개(리스트로) 받아오기 위함
     const [error, setError] = useState<string | null>(null);     // 에러 상태
+    const [selectedTypeCategoryId, setSelectedTypeCategoryId] = useState<string | "">("");
+    const [selectedRegionCategoryId, setSelectedRegionCategoryId] = useState<string | "">("");
 
 
     const [upLoading, setUploading] = useState(false);
 
+    console.log(posts)
 
     // 파일 선택 핸들러
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,6 +40,18 @@ export default function SharePostUploadPage() {
         nav(-1)
     }
 
+    const handleTypeCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setSelectedTypeCategoryId(String(e.target.value));
+        setPosts((prev) => ({...(prev ?? {}), type_category:{id:e.target.value,title:e.target.value}}));
+    }
+
+    const handleRegionCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setSelectedRegionCategoryId(String(e.target.value));
+        setPosts((prev) => ({...(prev ?? {}), region_category:{id:e.target.value,title:e.target.value}}));
+    }
+
+
+
     const handleUpload = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault(); // 기본 폼 제출 이벤트 막기
         setUploading(true); // 업로드 시작 표시
@@ -44,14 +61,14 @@ export default function SharePostUploadPage() {
         try {
             const formData = new FormData(); // multipart/form-data 전송용 폼데이터 생성
 
-            // posts 상태에 title이 있으면 formData에 추가
+            // posts 상태에 title이 있으면 formData에 추가, if posts.tilte이 있으면 formData에 title 키에 , 벨류로 posts?.title을 추가 없으면 '' 빈 문자열(if 로 걸렀기때문에 무조건 있긴함)
             if (posts?.title) formData.append("title", posts?.title || '');
             // description이 있으면 추가
             if (posts?.description) formData.append("description", posts?.description || '');
 
-            if (posts?.type_category?.title) formData.append("type_category", posts?.type_category?.title || '');
+            if (posts?.type_category?.id) formData.append("type_category", posts?.type_category?.id|| '');
 
-            if (posts?.region_category?.title) formData.append("region_category", posts?.region_category?.title || '');
+            if (posts?.region_category?.id) formData.append("region_category", posts?.region_category?.id || '');
 
             // 파일이 선택된 경우
             if (files) {
@@ -61,6 +78,17 @@ export default function SharePostUploadPage() {
                     formData.append("files", files[i]); // "files" 키는 꼭 백엔드 타입과 동일하게
                 }
             }
+            // 2. FormData 안의 모든 값 콘솔에 찍기
+            // for (const [key, value] of formData.entries()) {
+            //     // key: string, value: FormDataEntryValue (string | File)
+            //     if (value instanceof File) {
+            //         // value가 파일이면 파일 이름만 출력
+            //         console.log(`${key}: [File] ${value.name}`);
+            //     } else {
+            //         // value가 문자열이면 그대로 출력
+            //         console.log(`${key}: ${value}`);
+            //     }
+            // }
 
             // privateMultiAxios 인스턴스를 통해 POST 요청
             // 서버 엔드포인트에 formData 전송, Content-Type은 multipart/form-data로 자동 설정됨
@@ -98,7 +126,8 @@ export default function SharePostUploadPage() {
             <form onSubmit={handleUpload} className={styles.form}>
                 <label htmlFor="title" className={styles.label}>Title</label>
                 <div>
-                {/*    여기에 카테고리 넣*/}
+                    <TypeCategories value={selectedTypeCategoryId} onChange={handleTypeCategoryChange}/>
+                    <RegionCategories value={selectedRegionCategoryId} onChange={handleRegionCategoryChange}/>
                 </div>
                 <input
                     name="title"
@@ -139,7 +168,7 @@ export default function SharePostUploadPage() {
                 <ul>
                     {files.map((file, index) => (
                         <li key={index}>
-                            {file.name}
+                            {file?.name}
                             <button type="button" onClick={() => handleFileRemove(index)}>X</button>
                         </li>
                     ))}

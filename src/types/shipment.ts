@@ -18,13 +18,13 @@ export interface Shipment {
         role: string;
     }; // 작성자 id를 숫자로 받아옴 (선택적임 fastAPI 모델의 nullable = True 와 동일)
     type_category?: {
-        id: number;
+        id: string;
         title: string;
-    }
+    };
     region_category?: {
-        id: number;
+        id: string;
         title: string;
-    }
+    };
 }
 
 

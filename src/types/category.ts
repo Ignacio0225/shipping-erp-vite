@@ -1,5 +1,5 @@
 
-export interface TypeCategory {
+export interface Category {
     id: number;
     title:string;
     creator?:{
@@ -11,14 +11,3 @@ export interface TypeCategory {
     };
 }
 
-export interface RegionCategory {
-    id: number;
-    title:string;
-    creator?:{
-        id:number;
-        username:string;
-        email:string;
-        role:string;
-
-    };
-}

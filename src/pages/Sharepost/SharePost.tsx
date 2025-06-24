@@ -45,7 +45,7 @@ export default function SharePost() {
 
 
     useEffect(() => {
-        async function fetchPost() {
+        const fetchPost= async () => {
             try {
                 setLoading(true);
                 const res = await privateAxios.get<Shipment>(`api/posts/shipments/${ship_id}`)
@@ -86,17 +86,19 @@ export default function SharePost() {
                 <div>
                     <div>
                         <div className={styles.textContainer}>
-                            <h2 className={styles.postTitle} >제목 : {post.title}</h2>
-                            <h3>작성자 : {post.creator?.username}</h3>
+                            <h2 className={styles.postTitle} >제목 : {post?.title}</h2>
+                            <h3>작성자 : {post?.creator?.username}</h3>
+                            <p>타입 : {post?.type_category?.title}</p>
+                            <p>지역 : {post?.region_category?.title}</p>
                             <p>내용 : </p>
-                            <p>{post.description}</p>
+                            <p>{post?.description}</p>
                         </div>
                         <div className={styles.btnContainer}>
                             <button type={'button'} onClick={() => nav(`/posts/${post.id}/update`)}> 수정</button>
                             <button type={'button'} onClick={() => handleDelete()}>삭제</button>
                             <button type={'button'} onClick={() => nav(-1)}>목록</button>
                         </div>
-                        <SharePostFileDownload ship_id={post.id} filePaths={post.file_paths}/>
+                        <SharePostFileDownload ship_id={post?.id} filePaths={post?.file_paths}/>
                     </div>
                 </div>
             ) : (
