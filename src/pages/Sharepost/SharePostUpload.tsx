@@ -20,7 +20,7 @@ export default function SharePostUploadPage() {
 
     const [upLoading, setUploading] = useState(false);
 
-    console.log(posts)
+    // console.log(posts)
 
     // 파일 선택 핸들러
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -78,7 +78,7 @@ export default function SharePostUploadPage() {
                     formData.append("files", files[i]); // "files" 키는 꼭 백엔드 타입과 동일하게
                 }
             }
-            // 2. FormData 안의 모든 값 콘솔에 찍기
+            // // 2. FormData 안의 모든 값 콘솔에 찍기
             // for (const [key, value] of formData.entries()) {
             //     // key: string, value: FormDataEntryValue (string | File)
             //     if (value instanceof File) {

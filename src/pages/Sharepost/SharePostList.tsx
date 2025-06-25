@@ -57,6 +57,7 @@ export default function SharePostList() {
         setSearchParams({search: searchInput, page: '1'}); // 검색어를 반영하고 페이지는 항상 1로 만들어줌
     } // 검색 버튼을 누르면 searchInput을 통해 검색 문자열을 반영해주고 페이지는 1로 돌아가서 시작
 
+
     const handlePageChange = (pageNum: number) => {
         setSearchParams({search, page: String(pageNum)}); // 검색어는 유지, 페이지만 변경해서 URL에 반영해줌
     }; // search 파라미터는 기존 값을 유지, page 파라미터만 새 값으로 변경
@@ -93,7 +94,7 @@ export default function SharePostList() {
 
     return (
         <div className={styles.container}>
-            <h2 className={styles.title}>공유 게시판</h2>
+            <h2 className={styles.title}>통합 게시판</h2>
             <div className={styles.searchAndUpload}>
                 <form onSubmit={handleSearch}>  {/* 폼 제출 시 handleSearch 실행 */}
                     <input
@@ -117,7 +118,7 @@ export default function SharePostList() {
                                 <h3 className={styles.postTitle}>제목 : {post.title}</h3>{/* 게시글 클릭 시 상세 페이지로 이동 */}
                                 <p className={styles.postUsername}>작성자 : {post.creator?.username}</p>
                                 <span className={styles.postDate}>작성일 : {formatDate(post.created_at)}</span>
-                                <span className={styles.postDate}>수정일 (미완성 작성일로 대체) : {formatDate(post.created_at)}</span>
+                                {post.updated_at && (<span className={styles.postDate}>마지막 수정일 : {formatDate(post.updated_at)}</span>)}
                                 <ul>
                                     {post.file_paths?.map((filePath, index) => (
                                         <li key={index}

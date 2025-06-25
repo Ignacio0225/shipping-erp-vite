@@ -66,7 +66,7 @@ export default function Header() {
                                 // currentPage 는 /페이지이름 에 따라 active css 적용을 위함
                                 className={`${styles.navBtn} ${currentPage === 'share' ? styles.active : ''}`}
                             >
-                                공유게시판
+                                공유 게시판
                             </button>
                             <button
                                 className={`${styles.navBtn} ${currentPage === 'profit' ? styles.active : ''}`}

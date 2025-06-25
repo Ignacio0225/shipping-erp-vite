@@ -11,6 +11,8 @@ import SharePostFileDownload from './SharePostFileDownload.tsx';
 
 
 
+
+
 export default function SharePost() {
 
     const nav = useNavigate();
@@ -20,6 +22,22 @@ export default function SharePost() {
     const [post, setPost] = useState<Shipment | null>(null);     // 게시글 배열 상태
     const [loading, setLoading] = useState(true); // 로딩 상태
     const [error, setError] = useState<string | null>(null);     // 에러 상태
+
+    const formatDate = (isoString: string) => {
+        const utcDate = new Date(isoString);  // UTC 기준 Date 객체 생성
+        // 9시간 = 9 * 60 * 60 * 1000 밀리초
+        const kstDate = new Date(utcDate.getTime() + 9 * 60 * 60 * 1000); // 9시간 더해줌(시간,밀리초 계산해야함)
+
+        return kstDate.toLocaleString('ko-KR', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false,
+            timeZone: 'Asia/Seoul',
+        }).replace(/\. /g, '-').replace('.', '');  // "2025. 06. 21. 09:30" → "2025-06-21 09:30"
+    };
 
 
     const handleDelete = async () => {
@@ -88,6 +106,8 @@ export default function SharePost() {
                         <div className={styles.textContainer}>
                             <h2 className={styles.postTitle} >제목 : {post?.title}</h2>
                             <h3>작성자 : {post?.creator?.username}</h3>
+                            <p>작성일 : {formatDate(post?.created_at)}</p>
+                            {post?.updated_at && (<p>마지막 수정일 : {formatDate(post?.updated_at)}</p>)}
                             <p>타입 : {post?.type_category?.title}</p>
                             <p>지역 : {post?.region_category?.title}</p>
                             <p>내용 : </p>

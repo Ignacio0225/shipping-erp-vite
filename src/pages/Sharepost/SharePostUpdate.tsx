@@ -4,7 +4,9 @@ import {useNavigate, useParams} from "react-router-dom"; // useParams: URL 파�
 import axios from "axios"; // axios: HTTP 요청 및 에러 처리용
 import styles from './SharePostUpdate.module.css'; // CSS 모듈 불러오기 (.module.css는 클래스명이 자동으로 유니크하게 매핑됨)
 import type {Shipment} from "../../types/shipment"; // 게시글 타입 불러오기 (id, title, description, file_paths 등)
-import {privateAxios, privateMultiAxios} from "../../api/axios"; // privateAxios: 일반 요청 / privateMultiAxios: 파일 포함 multipart/form-data 요청
+import {privateAxios, privateMultiAxios} from "../../api/axios";
+import TypeCategories from "../../components/Categories/TypeCategories.tsx";
+import RegionCategories from "../../components/Categories/RegionCategories.tsx"; // privateAxios: 일반 요청 / privateMultiAxios: 파일 포함 multipart/form-data 요청
 
 // 이 함수가 실행되면 게시글 수정 화면이 그려짐
 export default function SharePostUpdate() {
@@ -15,11 +17,15 @@ export default function SharePostUpdate() {
 
     const [post, setPost] = useState<Partial<Shipment> | null>(null); // 게시글 내용을 저장할 상태 (title, description 등 일부 필드만)
     const [keepFilePaths, setKeepFilePaths] = useState<string[]>([]); // 기존 파일 중 "남길 파일 경로" 리스트
+    const [selectedTypeCategoryId, setSelectedTypeCategoryId] = useState<string | "">("");
+    const [selectedRegionCategoryId, setSelectedRegionCategoryId] = useState<string | "">("");
+
     const [newFiles, setNewFiles] = useState<File[]>([]); // 새로 업로드할 파일 리스트
     const [error, setError] = useState<string | null>(null); // 에러 메시지 저장
     const [loading, setLoading] = useState(true); // 게시글 데이터 불러오는 중인지 여부
     const [updating, setUpdating] = useState(false); // 수정 중인지 여부 (중복 요청 방지용)
 
+    // console.log(post)
     // ✅ 컴포넌트 마운트 시 기존 게시글 정보 불러오기
     useEffect(() => {
         async function fetchPost() {
@@ -39,6 +45,17 @@ export default function SharePostUpdate() {
         }
         fetchPost(); // 위 비동기 함수 실행
     }, [ship_id]); // ship_id가 바뀔 때마다 재실행됨
+
+
+
+    const handleTypeCategoryChange=(e:React.ChangeEvent<HTMLSelectElement>)=>{
+        setSelectedTypeCategoryId(String(e.target.value));
+        setPost(prev=>({...(prev ?? {}),type_category:{id:e.target.value,title:e.target.value}}));
+    }
+    const handleRegionCategoryChange=(e:React.ChangeEvent<HTMLSelectElement>)=>{
+        setSelectedRegionCategoryId(String(e.target.value));
+        setPost(prev=>({...(prev ?? {}),region_category:{id:e.target.value,title:e.target.value}}));
+    }
 
     // ✅ 새 파일 추가할 때 실행되는 함수 (input[type=file] onChange에 연결됨)
     const handleNewFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -60,6 +77,8 @@ export default function SharePostUpdate() {
         setKeepFilePaths(prev => prev.filter((_, i) => i !== index)); // 방식은 위와 동일
     };
 
+
+
     // ✅ 폼 제출 시 서버로 PUT 요청을 보내는 함수
     const handleUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault(); // 폼 제출 시 새로고침 방지
@@ -70,16 +89,32 @@ export default function SharePostUpdate() {
         try {
             const formData = new FormData(); // multipart/form-data 객체 생성 (파일 포함 가능)
 
-            if (post?.title) formData.append("title", post.title); // 제목 추가
-            if (post?.description) formData.append("description", post.description); // 설명 추가
+            if (post?.title) formData.append("title", post?.title); // 제목 추가
+            if (post?.description) formData.append("description", post?.description); // 설명 추가
+            if (post?.type_category?.id) formData.append('type_category',post?.type_category.id||'');
+            if (post?.region_category?.id) formData.append('region_category',post?.region_category.id||'');
             keepFilePaths.forEach(path => formData.append("keep_file_paths", path)); // 유지할 기존 파일 경로들 추가
             newFiles.forEach(file => formData.append("new_file_paths", file)); // 새로 추가한 파일들도 추가
+
+            // // 2. FormData 안의 모든 값 콘솔에 찍기
+            // for (const [key, value] of formData.entries()) {
+            //     // key: string, value: FormDataEntryValue (string | File)
+            //     if (value instanceof File) {
+            //         // value가 파일이면 파일 이름만 출력
+            //         console.log(`${key}: [File] ${value.name}`);
+            //     } else {
+            //         // value가 문자열이면 그대로 출력
+            //         console.log(`${key}: ${value}`);
+            //     }
+            // }
+
 
             // 서버에 PUT 요청 보내기 (파일 포함하므로 privateMultiAxios 사용)
             const res = await privateMultiAxios.put(`/api/posts/shipments/${ship_id}`, formData);
 
             setPost(res.data); // 응답으로 돌아온 게시글 데이터로 상태 갱신
             nav(`/posts/${ship_id}`); // 수정 완료 후 게시글 상세 페이지로 이동
+            // 2. FormData 안의 모든 값 콘솔에 찍기
         } catch (error) {
             if (axios.isAxiosError(error)) {
                 setError(error.response?.data?.detail || error.message); // 서버 에러 응답 표시
@@ -91,6 +126,8 @@ export default function SharePostUpdate() {
         }
     };
 
+
+
     // ✅ 조건에 따라 다른 UI 렌더링
     if (loading) return <div>로딩 중...</div>; // 로딩 상태일 때 메시지 표시
     if (error) return <div>{error}</div>; // 에러가 있을 경우 메시지 표시
@@ -100,7 +137,10 @@ export default function SharePostUpdate() {
     return (
         <div className={styles.postFormWrap}> {/* 폼 전체를 감싸는 div */}
             <h2 className={styles.title}>게시글 수정</h2> {/* 제목 */}
-
+            <div>
+                <TypeCategories value={selectedTypeCategoryId} onChange={handleTypeCategoryChange}/>
+                <RegionCategories value={selectedRegionCategoryId} onChange={handleRegionCategoryChange}/>
+            </div>
             <form onSubmit={handleUpdate} className={styles.form}> {/* 폼 시작 */}
                 <label className={styles.label}>Title</label>
                 <input

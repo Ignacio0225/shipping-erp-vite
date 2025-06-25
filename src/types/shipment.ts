@@ -10,6 +10,7 @@ export interface Shipment {
     // 안 보내도 에러 안 남
     file_paths?: string[] | null; // 파일의 경로를 문자열로 받아옴 (선택적임 fastAPI 모델의 nullable = True 와 동일)
     created_at: string; // 생성일시를 문자열(ISO 문자열)로 받아옴
+    updated_at: string;
     // updated_at 추가 예정
     creator?: {
         id: number;
