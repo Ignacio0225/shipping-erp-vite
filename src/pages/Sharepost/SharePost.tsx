@@ -116,7 +116,7 @@ export default function SharePost() {
                         <div className={styles.btnContainer}>
                             <button type={'button'} onClick={() => nav(`/posts/${post.id}/update`)}> 수정</button>
                             <button type={'button'} onClick={() => handleDelete()}>삭제</button>
-                            <button type={'button'} onClick={() => nav(-1)}>목록</button>
+                            <button type={'button'} onClick={() => nav('/posts/')}>목록</button>
                         </div>
                         <SharePostFileDownload ship_id={post?.id} filePaths={post?.file_paths}/>
                     </div>

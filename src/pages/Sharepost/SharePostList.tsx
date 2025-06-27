@@ -1,44 +1,53 @@
-import axios from 'axios';  // axios는 HTTP 요청을 보낼 때 사용
+import axios from 'axios';  // axios 라이브러리: HTTP 통신(REST API 요청)용
 
 import styles from './SharePostList.module.css';  // CSS 모듈 import, 클래스명을 객체처럼 사용 가능
 
-import {useEffect, useState} from 'react';  // React 훅들 import
-import {privateAxios} from '../../api/axios.ts';  // 경로는 프로젝트 구조에 맞게!
+import {useEffect, useState} from 'react';  // React 함수형 컴포넌트에서 사용하는 상태, 생명주기 훅 import
+import {privateAxios} from '../../api/axios.ts';  // 커스텀 Axios 인스턴스(import, 인증 포함/헤더 설정된 인스턴스)
 
-import type {ShipmentPageOut} from "../../types/shipment.ts";  // 타입스크립트에서 사용할 데이터 타입 import
-import {useNavigate, useSearchParams} from "react-router-dom";  // useSearchParams = 현재 파라미터를 받아서 URL에 보여주기위함
-import React from "react";  // 타입 정의나 JSX 사용을 위해 전체 React import
+import type {ShipmentPageOut} from "../../types/shipment.ts";  // 게시글(선적) 목록 타입 (배열+페이지네이션)
+import {useNavigate, useSearchParams} from "react-router-dom";  // SPA 라우팅(페이지 이동), URL 파라미터 관리
+import React from "react";  // React 전체 import(타입/JSX)
 
-import Pagination from '../../components/Pagination.tsx'
-
+import Pagination from '../../components/Pagination.tsx'   // 페이지네이션 컴포넌트
+import TypeCategories from "../../components/Categories/TypeCategories.tsx";   // 타입 카테고리(드롭다운)
+import RegionCategories from "../../components/Categories/RegionCategories.tsx"; // 지역 카테고리(드롭다운)
 
 export default function SharePostList() {
 
-    const nav = useNavigate();
+    const nav = useNavigate();   // 페이지 이동(라우팅) 함수
 
-    const [posts, setPosts] = useState<ShipmentPageOut | null>(null);     // 게시글 배열 상태
-    const [loading, setLoading] = useState(true); // 로딩 상태
-    const [error, setError] = useState<string | null>(null);     // 에러 상태
-    const [searchInput, setSearchInput] = useState(''); // input 필드에 입력되는 실시간 텍스트 상태
-    const [searchParams, setSearchParams] = useSearchParams(); // 실제로 검색을 수행할 키워드 상태
+    const [posts, setPosts] = useState<ShipmentPageOut | null>(null);     // 게시글 페이지(목록+페이지네이션 정보)
+    const [loading, setLoading] = useState(true); // 로딩 중 여부
+    const [error, setError] = useState<string | null>(null);     // 에러 메시지 상태
+    const [searchInput, setSearchInput] = useState(''); // 검색 입력 필드 상태
+    const [selectedTypeCategoryId, setSelectedTypeCategoryId] = useState<string | "">("");  // 선택한 타입카테고리
+    const [selectedRegionCategoryId, setSelectedRegionCategoryId] = useState<string | "">(""); // 선택한 지역카테고리
+    const [searchParams, setSearchParams] = useSearchParams(); // URL 쿼리 파라미터 읽기/설정용
 
-    const search = searchParams.get('search') || ''; // URL에서 'search' 파라미터를 추출(없으면 '' 빈 문자열)
-    const page = parseInt(searchParams.get('page') || '1', 10); // URL에서 'page' 파라미터를 추출 (없으면 1), (10은 10진수로 변환 하라는말)
+    const search = searchParams.get('search') || ''; // URL 쿼리에서 search값 추출(없으면 '')
+    const page = parseInt(searchParams.get('page') || '1', 10); // page값 추출(없으면 1, 숫자로 변환)
+
+    const rawTypeCategory = searchParams.get('type_category'); // type_category 값(문자열)
+    const type_category = rawTypeCategory ? parseInt(rawTypeCategory, 10) : undefined; // 숫자로 변환(없으면 undefined)
+
+    const rawRegionCategory = searchParams.get('region_category');
+    const region_category = rawRegionCategory ? parseInt(rawRegionCategory, 10) : undefined; // 숫자로 변환(없으면 undefined)
 
 
-    // 파일 이름 uuid 없애고 보여주는 로직
+    // 파일 경로에서 uuid를 제거하고 실제 파일 이름만 추출
     const getFileName = (path: string) => {
-        const fullName = path.split('/').pop() || 'unknown_file';
-        const parts = fullName.split('_');
-        return parts.length > 1 ? parts.slice(1).join('_') : fullName;
+        const fullName = path.split('/').pop() || 'unknown_file'; // 경로에서 파일명 추출(없으면 unknown_file)
+        const parts = fullName.split('_'); // uuid_파일명으로 저장되어 있으면, _로 분리
+        return parts.length > 1 ? parts.slice(1).join('_') : fullName; // uuid 이후만(원래 파일명)
     }
 
-    //시간을 내가 보고싶은대로 설정하는 방법 (utc로 기준잡았기때문에 한국시간으로 맞춰줌)
+    // UTC 시간을 KST(한국시간)로 변환해서 YYYY-MM-DD HH:mm 포맷으로 출력
     const formatDate = (isoString: string) => {
         const utcDate = new Date(isoString);  // UTC 기준 Date 객체 생성
         // 9시간 = 9 * 60 * 60 * 1000 밀리초
-        const kstDate = new Date(utcDate.getTime() + 9 * 60 * 60 * 1000); // 9시간 더해줌(시간,밀리초 계산해야함)
-
+        const kstDate = new Date(utcDate.getTime() + 9 * 60 * 60 * 1000); // 9시간 더해줌(한국시간)
+        // "2025. 06. 21. 09:30" → "2025-06-21 09:30" 형태로 변환
         return kstDate.toLocaleString('ko-KR', {
             year: 'numeric',
             month: '2-digit',
@@ -47,36 +56,68 @@ export default function SharePostList() {
             minute: '2-digit',
             hour12: false,
             timeZone: 'Asia/Seoul',
-        }).replace(/\. /g, '-').replace('.', '');  // "2025. 06. 21. 09:30" → "2025-06-21 09:30"
+        }).replace(/\. /g, '-').replace('.', '');
     };
 
+    // 타입 카테고리 드롭다운이 변경될 때 실행
+    const handleTypeCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        e.preventDefault(); // (실제 select에선 영향 없음. 폼 submit 방지용)
+        setSelectedTypeCategoryId(String(e.target.value)); // 상태값 변경
+        setSearchParams({
+            ...Object.fromEntries(searchParams.entries()), // 기존 파라미터 유지
+            type_category: e.target.value, // type_category 파라미터 변경/추가
+            page: '1' // 페이지 1로 초기화(검색조건 바뀌면 1페이지부터 보여줘야함)
+        });
+    }
+    // 지역 카테고리 드롭다운 변경 시 실행
+    const handleRegionCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        e.preventDefault();
+        setSelectedRegionCategoryId(String(e.target.value));
+        setSearchParams({
+            ...Object.fromEntries(searchParams.entries()),
+            region_category: e.target.value,
+            page: '1'
+        });
+    }
 
-    // 검색 버튼 혹은 Enter로 폼이 제출될 때 실행
+    // 검색 폼 제출(검색 버튼 클릭/엔터) 시 실행
     const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();  // 새로고침 방지
-        setSearchParams({search: searchInput, page: '1'}); // 검색어를 반영하고 페이지는 항상 1로 만들어줌
-    } // 검색 버튼을 누르면 searchInput을 통해 검색 문자열을 반영해주고 페이지는 1로 돌아가서 시작
+        setSearchParams({search: searchInput, page: '1'}); // 검색어+페이지=1로 세팅(카테고리는 없음)
+    }
 
-
+    // 페이지네이션 버튼 클릭 시 실행(페이지 이동)
     const handlePageChange = (pageNum: number) => {
-        setSearchParams({search, page: String(pageNum)}); // 검색어는 유지, 페이지만 변경해서 URL에 반영해줌
-    }; // search 파라미터는 기존 값을 유지, page 파라미터만 새 값으로 변경
+        setSearchParams({search, page: String(pageNum)}); // 검색어는 유지, 페이지 번호만 바꿔서 URL 반영
+    };
 
-    // 컴포넌트가 처음 마운트되거나, page 또는 search 값이 바뀔 때마다 게시글 목록을 불러오기
+    // API 요청 URL 조립 (선택된 값만 파라미터로 붙음)
+    let url = `/api/posts/shipments?page=${page}&size=10`;
+    if (type_category) {
+        url += `&type_category=${type_category}`; // type_category 값이 있으면 파라미터 추가
+    }
+    if (region_category) {
+        url += `&region_category=${region_category}`; // region_category 값이 있으면 파라미터 추가
+    }
+    if (search) {
+        url += `&search=${encodeURIComponent(search)}`; // 검색어가 있으면 파라미터 추가(공백/특수문자 인코딩)
+    }
+
+    // 게시글 목록 불러오기 (최초 렌더링/파라미터 변화 시마다 실행)
     useEffect(() => {
-        const fetchPosts= async () => {
+        const fetchPosts = async () => {
             try {
                 setLoading(true);  // 로딩 시작
                 const res = await privateAxios.get<ShipmentPageOut>(
-                    `/api/posts/shipments?page=${page}&size=10&search=${encodeURIComponent(search)}`
-                ); // 실제 엔드포인트명으로 수정
-                setPosts(res.data);   // 게시글 목록 상태로 저장
+                    url
+                ); // Axios로 GET요청(API)
+                setPosts(res.data);   // 응답 데이터(posts 목록) 상태로 저장
             } catch (error) {
-                // axios가 제공하는 isAxiosError 함수로 체크
-                if (axios.isAxiosError(error)) { // Axios가 던지는 에러 객체는 일반 Error와는 조금 다르기 때문에 이 조건으로 먼저 확인
-                    setError('에러 : ' + (error.response?.data?.detail || error.message)); // detail이 없으면 일반적인 JavaScript 에러 메시지인 error.message를 보여줌
+                // 에러 상황별 메시지 처리(axios 에러, 일반 JS에러, 그 외)
+                if (axios.isAxiosError(error)) {
+                    setError('에러 : ' + (error.response?.data?.detail || error.message));
                 } else if (error instanceof Error) {
-                    setError('에러 : ' + (error.message)); // Axios 에러가 아닌 일반적인 JavaScript 에러일 경우
+                    setError('에러 : ' + (error.message));
                 } else {
                     setError('에러 : 알 수 없는 오류');
                 }
@@ -84,52 +125,58 @@ export default function SharePostList() {
                 setLoading(false);  // 로딩 종료
             }
         }
+        void fetchPosts(); // 비동기 함수 실행 (권장패턴)
+    }, [url]); // url이 바뀔 때마다 재실행(의존성)
 
-
-        void fetchPosts(); // 비동기 함수 실행
-    }, [page, search]); // page 또는 search 값이 변경될 때마다 재실행됨
-
-    if (loading) return <div>로딩 중...</div>;  // 로딩 중 UI 표시
-    if (error) return <div>{error}</div>;        // 에러 메시지 UI 표시
+    // 화면 렌더링 분기(로딩/에러/게시글 목록)
+    if (loading) return <div>로딩 중...</div>;
+    if (error) return <div>{error}</div>;
 
     return (
         <div className={styles.container}>
             <h2 className={styles.title}>통합 게시판</h2>
             <div className={styles.searchAndUpload}>
-                <form onSubmit={handleSearch}>  {/* 폼 제출 시 handleSearch 실행 */}
+                <div className={styles.categories}>
+                    <TypeCategories value={selectedTypeCategoryId} onChange={handleTypeCategoryChange}/>
+                    <RegionCategories value={selectedRegionCategoryId} onChange={handleRegionCategoryChange}/>
+                </div>
+                <form onSubmit={handleSearch}>
                     <input
                         type="text"
-                        value={searchInput}  // 입력 필드에 searchInput 상태 연결
-                        onChange={(e) => setSearchInput(e.target.value)} // 타이핑될 때마다 상태 업데이트
-                        placeholder="제목 또는 내용 검색"  // 사용자에게 보여지는 힌트 텍스트
+                        value={searchInput}
+                        onChange={(e) => setSearchInput(e.target.value)}
+                        placeholder="제목 또는 내용 검색"
                         className={styles.searchInput}
                     />
                     <button type={'submit'}>검색</button>
                 </form>
                 <button type={"button"} onClick={() => nav('/posts/upload')}>글쓰기</button>
             </div>
-            {posts?.items.length === 0 ? (  // 게시글이 없는 경우
+            {posts?.items.length === 0 ? (
                 <div>게시글이 없습니다.</div>
             ) : (
                 <div>
                     <ul className={styles.postList}>
                         {posts?.items.map(post => (
                             <li key={post.id} className={styles.postCard} onClick={() => nav(`/posts/${post.id}`)}>
-                                <h3 className={styles.postTitle}>제목 : {post.title}</h3>{/* 게시글 클릭 시 상세 페이지로 이동 */}
+                                <h3 className={styles.postTitle}>제목 : {post.title}</h3>
+                                <p className={styles.category}>{post.type_category?.title} / {post.region_category?.title}</p>
                                 <p className={styles.postUsername}>작성자 : {post.creator?.username}</p>
                                 <span className={styles.postDate}>작성일 : {formatDate(post.created_at)}</span>
-                                {post.updated_at && (<span className={styles.postDate}>마지막 수정일 : {formatDate(post.updated_at)}</span>)}
+                                {post.updated_at && (
+                                    <span className={styles.postDate}>마지막 수정일 : {formatDate(post.updated_at)}</span>
+                                )}
                                 <ul>
                                     {post.file_paths?.map((filePath, index) => (
-                                        <li key={index}
-                                            className={styles.postFilePaths}>첨부파일 {index + 1} : {getFileName(filePath)}</li>
+                                        <li key={index} className={styles.postFilePaths}>
+                                            첨부파일 {index + 1} : {getFileName(filePath)}
+                                        </li>
                                     ))}
                                 </ul>
                             </li>
                         ))}
                     </ul>
-
-                    <div className={styles.paginationContainer}>  {/* 페이지네이션 영역 */}
+                    <div className={styles.paginationContainer}>
                         <Pagination
                             currentPage={page}
                             totalPages={posts?.total_pages || 0}
@@ -138,15 +185,13 @@ export default function SharePostList() {
                             posts={posts!}
                         />
                     </div>
-
                     <div className={styles.pageInfo}>
-                        <span>{page} / {posts ? Math.ceil(posts.total / 10) : 1}</span> {/* 현재 페이지 / 전체 페이지 */}
-                        <p>총 게시글 수: {posts?.total}</p> {/* 전체 게시글 수 표시 */}
-                        <p>현재 페이지: {posts?.page}</p>  {/* 현재 페이지 번호 표시 */}
+                        <span>{page} / {posts ? Math.ceil(posts.total / 10) : 1}</span>
+                        <p>총 게시글 수: {posts?.total}</p>
+                        <p>현재 페이지: {posts?.page}</p>
                     </div>
                 </div>
             )}
         </div>
-
     );
 }

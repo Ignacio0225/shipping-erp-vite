@@ -13,14 +13,12 @@ interface CategoryProps {
 
 export default function TypeCategories({onChange,value}:CategoryProps) {
     const [typeCategories, setTypeCategories] = useState<Category[]>([]);
-    // const [regionCategories, setRegionCategories] = useState<Partial<Shipment>|null>(null);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchCategories= async () => {
             try {
-                const res = await privateAxios.get<Category[]>(`/api/category/type/`)
-                console.log(res)
+                const res = await privateAxios.get<Category[]>(`/api/category/type`)
                 setTypeCategories(res.data);
             } catch (error) {
                 if (axios.isAxiosError(error)) {

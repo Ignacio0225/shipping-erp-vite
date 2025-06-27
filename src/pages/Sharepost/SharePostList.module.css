@@ -48,9 +48,60 @@
     max-width: 400px;
 }
 
+.categories {
+    color: #212529;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.8rem 1rem;
+    margin-bottom: 1.5rem;
+    transition: box-shadow 0.2s;
+    animation: fadeIn 0.4s ease;
+}
+
+.categories label {
+    font-size: 0.97rem;
+    color: #495057;
+    font-weight: 500;
+    margin-right: 0.7rem;
+}
+
+.categories select {
+    min-width: 130px;
+    padding: 0.5rem 1.3rem 0.5rem 0.8rem;
+    font-size: 0.92rem;
+    color: #212529;
+    background: linear-gradient(120deg, #fff, #f8f9fa 70%);
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    box-shadow: 0 2px 7px rgba(0, 0, 0, 0.06);
+    appearance: none;
+    outline: none;
+    transition: border 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.categories select:focus {
+    border-color: #333;
+    box-shadow: 0 0 0 2px rgba(40, 40, 40, 0.13);
+    background: linear-gradient(120deg, #f8f9fa 50%, #e9ecef 100%);
+}
+
+/* 셀렉트에 아이콘 느낌을 줄 수 있음 (선택) */
+.categories select {
+    background-image: url("data:image/svg+xml;utf8,<svg fill='gray' height='20' viewBox='0 0 20 20' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M5.516 7.548a.625.625 0 01.884-.032L10 10.828l3.6-3.312a.625.625 0 11.852.914l-4 3.687a.625.625 0 01-.852 0l-4-3.687a.625.625 0 01-.032-.884z'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 0.8rem center;
+    background-size: 1.1em;
+    padding-right: 2.1rem; /* 아이콘 공간 */
+}
+
 .searchInput {
     flex: 1;
     padding: 8px 12px;
+    width: 19rem;
     border-radius: 6px;
     border: 1px solid #dee2e6;
     background: #ffffff;
@@ -154,6 +205,7 @@ button[type="button"]:hover {
     margin-top: 0.5rem;
 }
 
+.category,
 .postUsername,
 .postDate,
 .postFilePaths {
@@ -222,46 +274,54 @@ button[type="button"]:hover {
         margin: 1rem;
         padding: 1.2rem;
     }
-    
+
+    .categories {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.5rem;
+        padding: 0.7rem 0.5rem;
+    }
+
+    .categories select {
+        min-width: 0;
+        width: 100%;
+    }
+
     .pageTitle {
         font-size: 1.3rem;
         margin-bottom: 1.2rem;
     }
-    
+
     .searchAndUpload {
         flex-direction: column;
         gap: 0.8rem;
         align-items: stretch;
     }
-    
+
     .form {
         max-width: none;
     }
-    
-    .searchInput {
-        padding: 8px 10px;
-        font-size: 0.8rem;
-    }
-    
+
+
     button[type="submit"],
     button[type="button"] {
         padding: 8px 14px;
         font-size: 0.8rem;
     }
-    
+
     .postCard {
         padding: 1rem;
     }
-    
+
     .postTitle {
         font-size: 1rem;
     }
-    
+
     .postMeta {
         flex-direction: column;
         gap: 0.4rem;
     }
-    
+
     .paginationContainer {
         margin-top: 1.5rem;
         gap: 0.3rem;

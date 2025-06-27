@@ -18,8 +18,7 @@ export default function RegionCategories({onChange,value}:CategoryProps) {
     useEffect(() => {
         const fetchCategories= async () => {
             try {
-                const res = await privateAxios.get<Category[]>(`/api/category/region/`)
-                console.log(res)
+                const res = await privateAxios.get<Category[]>(`/api/category/region`)
                 setRegionCategories(res.data);
             } catch (error) {
                 if (axios.isAxiosError(error)) {
