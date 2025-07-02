@@ -45,18 +45,27 @@ export default function SharePostUpdate() {
                 setLoading(false); // 로딩 종료
             }
         }
+
         fetchPost(); // 위 함수 즉시 실행
     }, [ship_id]); // ship_id 바뀔 때마다 재실행(동적 라우팅 대응)
 
+    const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setPost((prev) => ({...(prev ?? {}), title: e.target.value}))
+    }
+    const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        setPost((prev) => ({...(prev ?? {}), description: e.target.value}))
+    }
+
+
     // ⭐ 카테고리(타입) 셀렉트박스 값 변경 시
-    const handleTypeCategoryChange=(e:React.ChangeEvent<HTMLSelectElement>)=>{
+    const handleTypeCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedTypeCategoryId(String(e.target.value)); // 셀렉트박스에 보일 값 세팅
-        setPost(prev=>({...(prev ?? {}),type_category:{id:e.target.value,title:e.target.value}})); // post 상태에도 값 반영
+        setPost(prev => ({...(prev ?? {}), type_category: {id: e.target.value, title: e.target.value}})); // post 상태에도 값 반영
     }
     // ⭐ 카테고리(지역) 셀렉트박스 값 변경 시
-    const handleRegionCategoryChange=(e:React.ChangeEvent<HTMLSelectElement>)=>{
+    const handleRegionCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedRegionCategoryId(String(e.target.value));
-        setPost(prev=>({...(prev ?? {}),region_category:{id:e.target.value,title:e.target.value}}));
+        setPost(prev => ({...(prev ?? {}), region_category: {id: e.target.value, title: e.target.value}}));
     }
 
     // ⭐ 새 파일 선택 시 파일 상태에 추가
@@ -92,8 +101,8 @@ export default function SharePostUpdate() {
             if (post?.description) formData.append("description", post?.description);
 
             // 카테고리(서버에서 숫자로 받으니까 id만)
-            if (post?.type_category?.id) formData.append('type_category', post?.type_category.id||'');
-            if (post?.region_category?.id) formData.append('region_category', post?.region_category.id||'');
+            if (post?.type_category?.id) formData.append('type_category', post?.type_category.id || '');
+            if (post?.region_category?.id) formData.append('region_category', post?.region_category.id || '');
 
             // 기존 파일 중 남길 파일들 (백엔드에서 유지할 경로로 사용)
             keepFilePaths.forEach(path => formData.append("keep_file_paths", path));
@@ -135,7 +144,7 @@ export default function SharePostUpdate() {
                 <input
                     type="text"
                     value={post.title} // 제목
-                    onChange={(e) => setPost(prev => ({...(prev ?? {}), title: e.target.value}))}
+                    onChange={handleTitleChange}
                     required
                     className={styles.input}
                 />
@@ -144,7 +153,7 @@ export default function SharePostUpdate() {
                 <textarea
                     rows={20}
                     value={post.description} // 본문
-                    onChange={(e) => setPost(prev => ({...(prev ?? {}), description: e.target.value}))}
+                    onChange={handleDescriptionChange}
                     required
                     className={styles.textarea}
                 />

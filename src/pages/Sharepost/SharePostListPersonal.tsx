@@ -15,7 +15,7 @@ import RegionCategories from "../../components/Categories/RegionCategories.tsx";
 import formatDate from "../../components/formatDate.tsx";
 
 
-export default function SharePostList() {
+export default function SharePostListPersonal() {
 
     const nav = useNavigate();   // 페이지 이동(라우팅) 함수
 
@@ -77,7 +77,7 @@ export default function SharePostList() {
     };
 
     // API 요청 URL 조립 (선택된 값만 파라미터로 붙음)
-    let url = `/api/posts/shipments?page=${page}&size=10`;
+    let url = `/api/posts/shipments/personal?page=${page}&size=10`;
     if (type_category) {
         url += `&type_category=${type_category}`; // type_category 값이 있으면 파라미터 추가
     }
@@ -119,7 +119,7 @@ export default function SharePostList() {
 
     return (
         <div className={styles.container}>
-            <h2 className={styles.title}>통합 게시판</h2>
+            <h2 className={styles.title}>개인 게시판</h2>
             <div className={styles.searchAndUpload}>
                 <div className={styles.categories}>
                     <TypeCategories value={selectedTypeCategoryId} onChange={handleTypeCategoryChange}/>

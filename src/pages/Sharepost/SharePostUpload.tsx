@@ -22,6 +22,10 @@ export default function SharePostUploadPage() {
 
     // console.log(posts)
 
+    const goBack = () => {
+        nav(-1)
+    }
+
     // 파일 선택 핸들러
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!e.target.files) return; // null 체크 필수
@@ -36,9 +40,14 @@ export default function SharePostUploadPage() {
         setFiles(prev => prev.filter((_, i) => i !== index));
     };
 
-    const goBack = () => {
-        nav(-1)
+
+    const handleTitleChange =(e:React.ChangeEvent<HTMLInputElement>)=>{
+        setPosts((prev) => ({...(prev ?? {}), title: e.target.value}))
     }
+    const handleDescriptionChange =(e:React.ChangeEvent<HTMLTextAreaElement>)=>{
+        setPosts((prev) => ({...(prev ?? {}), description: e.target.value}))
+    }
+
 
     const handleTypeCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedTypeCategoryId(String(e.target.value));
@@ -49,7 +58,6 @@ export default function SharePostUploadPage() {
         setSelectedRegionCategoryId(String(e.target.value));
         setPosts((prev) => ({...(prev ?? {}), region_category:{id:e.target.value,title:e.target.value}}));
     }
-
 
 
     const handleUpload = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -133,9 +141,7 @@ export default function SharePostUploadPage() {
                     name="title"
                     type="text"
                     value={posts?.title}
-                    onChange={(e) =>
-                        setPosts((prev) => ({...(prev ?? {}), title: e.target.value}))
-                    }
+                    onChange={handleTitleChange}
                     placeholder="Title"
                     required
                     minLength={5}
@@ -147,9 +153,7 @@ export default function SharePostUploadPage() {
                     name="description"
                     rows={20}
                     value={posts?.description}
-                    onChange={(e) =>
-                        setPosts((prev) => ({...(prev ?? {}), description: e.target.value}))
-                    }
+                    onChange={handleDescriptionChange}
                     placeholder="Description"
                     required
                     minLength={1}

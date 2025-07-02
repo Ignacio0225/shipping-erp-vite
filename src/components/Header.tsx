@@ -19,6 +19,7 @@ export default function Header() {
     // 현재 페이지 확인 함수 (페이지 이름을 가져오는법)
     const getCurrentPage = () => {
         const path = location.pathname;
+        if (path.includes('/posts/personal')) return 'personal';
         if (path.includes('/posts')) return 'share';
         if (path.includes('/profit-graph')) return 'profit-graph';
         if (path.includes('/profit')) return 'profit';
@@ -66,7 +67,15 @@ export default function Header() {
                                 // currentPage 는 /페이지이름 에 따라 active css 적용을 위함
                                 className={`${styles.navBtn} ${currentPage === 'share' ? styles.active : ''}`}
                             >
-                                공유 게시판
+                                통합 게시판
+                            </button>
+                            <button
+
+                                onClick={()=>nav('/posts/personal')}
+                                // currentPage 는 /페이지이름 에 따라 active css 적용을 위함
+                                className={`${styles.navBtn} ${currentPage === 'personal' ? styles.active : ''}`}
+                            >
+                                개인 게시판
                             </button>
                             <button
                                 className={`${styles.navBtn} ${currentPage === 'profit' ? styles.active : ''}`}

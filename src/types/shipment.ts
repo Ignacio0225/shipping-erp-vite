@@ -1,7 +1,10 @@
 // src/type/shipments.ts
 
 // 1.선적(Shipments) 객체가 가져야 하는 데이터 구조를 인터페이스로 정의함.
-export interface Shipment {
+import type {PageData} from "../components/Pagination.tsx";
+
+
+export type Shipment = {
     id: number; // shipment 게시글의 id(고유번호)
     title: string; // 게시글을 문자열로 받아옴
     description?: string; // 게시글 내용 문자열로 받아옴 (선택적임 fastAPI 모델의 nullable = True 와 동일)
@@ -29,10 +32,5 @@ export interface Shipment {
 }
 
 
-export interface ShipmentPageOut {
-    items: Shipment[];
-    total: number;
-    page: number;
-    size: number;
-    total_pages: number;
-}
+
+export type ShipmentPageOut = PageData<Shipment>;

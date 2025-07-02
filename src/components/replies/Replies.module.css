@@ -1,0 +1,215 @@
+.repliesContainer {
+    margin-top: 2.5rem;
+    padding: 1.5rem 2rem;
+    background: rgba(246, 248, 252, 0.93);
+    border-radius: 12px;
+    border: 1px solid #e8eaf0;
+    box-shadow: 0 2px 12px rgba(33, 37, 41, 0.03);
+    min-height: 120px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    transition: box-shadow 0.18s;
+}
+
+.repliesContainer:hover {
+    box-shadow: 0 6px 24px rgba(33, 37, 41, 0.09);
+}
+
+.replyList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.replyItem {
+    padding: 1.1rem 0.5rem 1.1rem 0;
+    border-bottom: 1px solid #eceff4;
+    margin-bottom: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.replyItem:last-child {
+    border-bottom: none;
+}
+
+.replyHeader {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+}
+
+.replyUsername {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #4169e1;
+}
+
+.replyDate {
+    font-size: 0.9rem;
+    color: #8993a4;
+}
+
+.replyText {
+    font-size: 1.05rem;
+    color: #1b1e23;
+    background: rgba(255,255,255,0.93);
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid #e0e3ea;
+    white-space: pre-wrap;
+    word-break: break-word;
+    line-height: 1.7;
+}
+
+.replyActions {
+    display: flex;
+    gap: 0.7rem;
+    align-items: center;
+    margin-top: 0.2rem;
+}
+
+.replyDeleteBtn,
+.replyEditBtn,
+.replySaveBtn,
+.replyCancelBtn {
+    font-size: 0.87rem;
+    padding: 0.5em 1em;
+    border-radius: 7px;
+    cursor: pointer;
+    background: linear-gradient(90deg,#005bea,#3ec6e0);
+    color: #fff;
+    border: none;
+    font-weight: 500;
+    transition: background 0.16s, box-shadow 0.14s;
+    box-shadow: 0 2px 4px rgba(30, 160, 255, 0.07);
+}
+
+.replyDeleteBtn{
+    background: linear-gradient(90deg, #d52222, #c58383);
+}
+
+
+.replyDeleteBtn:hover,
+.replyEditBtn:hover,
+.replySaveBtn:hover {
+    background: linear-gradient(90deg,#3ec6e0,#005bea);
+    box-shadow: 0 4px 10px rgba(30, 160, 255, 0.11);
+}
+
+.replyDeleteBtn:hover{
+    background: linear-gradient(90deg,#c58383,#d52222);
+}
+
+
+.replyCancelBtn {
+    background: #adb5bd;
+    color: #f8f9fa;
+}
+
+.replyCancelBtn:hover {
+    background: #888d92;
+}
+
+.replyInput {
+    width: 100%;
+    font-size: 1.05rem;
+    padding: 0.7em 1em;
+    border-radius: 7px;
+    border: 1px solid #ccd2db;
+    background: #fff;
+    margin-top: 0.1em;
+    margin-bottom: 0.5em;
+    resize: vertical;
+    min-height: 54px;
+    outline: none;
+    transition: border-color 0.15s;
+}
+
+.replyInput:focus {
+    border-color: #005bea;
+    background: #f4faff;
+}
+
+.paginationContainer {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+
+
+
+/*여기서부터 업로드 컴포넌트용*/
+
+
+.replyForm {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    background: rgba(255, 255, 255, 0.87);
+    border-radius: 11px;
+    padding: 1.1rem 1.2rem 1.2rem 1.2rem;
+    margin-bottom: 1.4rem;
+    box-shadow: 0 2px 8px rgba(110, 130, 160, 0.06);
+    border: 1px solid #e4e7ed;
+}
+
+.replyFormTextarea {
+    font-size: 1.07rem;
+    padding: 0.8em 1.1em;
+    border-radius: 8px;
+    border: 1.5px solid #c8d2e1;
+    background: #f9fcff;
+    resize: vertical;
+    min-height: 64px;
+    outline: none;
+    transition: border-color 0.16s;
+    font-family: inherit;
+    margin-bottom: 0.4rem;
+}
+
+.replyFormTextarea:focus {
+    border-color: #005bea;
+    background: #f4faff;
+}
+
+.replyFormActions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.replyFormBtn {
+    font-size: 1rem;
+    padding: 0.54em 1.4em;
+    border-radius: 7px;
+    cursor: pointer;
+    background: linear-gradient(90deg,#005bea,#3ec6e0);
+    color: #fff;
+    border: none;
+    font-weight: 600;
+    box-shadow: 0 2px 4px rgba(30, 160, 255, 0.06);
+    transition: background 0.16s, box-shadow 0.14s;
+}
+
+.replyFormBtn:disabled {
+    background: #a7b5c9;
+    cursor: not-allowed;
+}
+
+.replyFormBtn:hover:not(:disabled) {
+    background: linear-gradient(90deg,#3ec6e0,#005bea);
+    box-shadow: 0 4px 12px rgba(30, 160, 255, 0.11);
+}
+
+.replyFormError {
+    color: #d63333;
+    font-size: 0.96rem;
+    margin-left: 1.2rem;
+    font-weight: 500;
+    letter-spacing: -0.2px;
+}

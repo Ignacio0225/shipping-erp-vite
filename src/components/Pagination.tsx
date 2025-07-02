@@ -2,24 +2,32 @@
 import styles from './Pagination.module.css'
 
 // Pagination 컴포넌트의 Props(매개변수) 타입 정의
-import type {ShipmentPageOut} from "../types/shipment.ts";
 
-interface Props {
+export type PageData<T> = {
+    items: T[];
+    total: number;
+    page: number;
+    size: number;
+    total_pages: number;
+}
+
+
+type Props<T> = {
     currentPage: number; // 현재 활성화된 페이지 번호
     totalPages: number;  // 전체 페이지 수
     onPageChange: (pageNum: number) => void; // 페이지 버튼을 클릭했을 때 호출할 함수 (부모가 넘겨줌)
     maxButtons?: number; // 한 번에 보여줄 페이지 버튼 수 (생략 가능)
-    posts:ShipmentPageOut
+    data: PageData<T>
 }
 
 // Pagination 컴포넌트 정의, 위에서 정의한 Props 타입을 구조 분해 할당으로 받음
-export default function Pagination({
-    currentPage,       // 현재 페이지 번호
-    totalPages,        // 전체 페이지 수
-    onPageChange,      // 페이지 변경 함수
-    maxButtons = 10,   // 최대 보여줄 페이지 버튼 수 (기본은 10이지만 부모에 서 20을 주면 20으로 적용됨)
-    posts
-    }: Props) {
+export default function Pagination<T>({
+currentPage,       // 현재 페이지 번호
+totalPages,        // 전체 페이지 수
+onPageChange,      // 페이지 변경 함수
+maxButtons = 10,   // 최대 보여줄 페이지 버튼 수 (기본은 10이지만 부모에 서 20을 주면 20으로 적용됨)
+data
+}: Props<T>) {
 
     // 페이지 버튼에 표시할 번호 범위를 계산하는 함수
     const getPageRange = () => {
@@ -71,12 +79,12 @@ export default function Pagination({
                 className={styles.paginationBtn}
                 onClick={() =>
                     onPageChange(
-                        posts && currentPage < Math.ceil(posts.total / 10)
+                        data && currentPage < Math.ceil(data.total / 10)
                             ? currentPage + 1
                             : currentPage
                     )
                 }
-                disabled={posts ? currentPage >= Math.ceil(posts.total / 10) : true} // 마지막 페이지이면 비활성화
+                disabled={data ? currentPage >= Math.ceil(data.total / 10) : true} // 마지막 페이지이면 비활성화
             >
                 다음
             </button>
