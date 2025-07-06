@@ -1,4 +1,4 @@
-import type {Shipment} from "../../types/shipment";
+import type {Post} from "../../types/post.ts";
 import React, {useState} from "react";
 import {privateMultiAxios} from "../../api/axios.ts";
 import {useNavigate} from "react-router-dom";
@@ -11,7 +11,7 @@ import RegionCategories from "../../components/Categories/RegionCategories.tsx";
 export default function SharePostUploadPage() {
 
     const nav = useNavigate()
-    const [posts, setPosts] = useState<Partial<Shipment> | null>(null);  //shipment type 에서 필요한거만 가져와서 쓰기 위해
+    const [posts, setPosts] = useState<Partial<Post> | null>(null);  //post type 에서 필요한거만 가져와서 쓰기 위해
     const [files, setFiles] = useState<File[]>([]); // 파일 업로드는 따로 상태 관리 타입은 FileList 여러개(리스트로) 받아오기 위함
     const [error, setError] = useState<string | null>(null);     // 에러 상태
     const [selectedTypeCategoryId, setSelectedTypeCategoryId] = useState<string | "">("");
@@ -100,7 +100,7 @@ export default function SharePostUploadPage() {
 
             // privateMultiAxios 인스턴스를 통해 POST 요청
             // 서버 엔드포인트에 formData 전송, Content-Type은 multipart/form-data로 자동 설정됨
-            const res = await privateMultiAxios.post<Shipment>('api/posts/shipments/', formData);
+            const res = await privateMultiAxios.post<Post>('api/posts/', formData);
 
             // 응답 상태가 200 또는 201일 때 성공 처리
             if (res.status === 200 || res.status === 201) {

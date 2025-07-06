@@ -4,17 +4,17 @@ import React, {useEffect, useState} from "react"; // 리액트, useEffect: 마�
 import {useNavigate, useParams} from "react-router-dom"; // useParams: URL에서 파라미터 추출 / useNavigate: 라우팅용(페이지 이동)
 import axios from "axios"; // axios: 비동기 HTTP 요청 및 예외 처리
 import styles from './SharePostUpdate.module.css'; // css 모듈(클래스명이 자동으로 유니크하게 매핑됨)
-import type {Shipment} from "../../types/shipment"; // 게시글 타입(데이터 구조 타입스크립트로)
+import type {Post} from "../../types/post.ts"; // 게시글 타입(데이터 구조 타입스크립트로)
 import {privateAxios, privateMultiAxios} from "../../api/axios"; // 인증이 필요한 axios 인스턴스(파일 포함시엔 privateMultiAxios)
 import TypeCategories from "../../components/Categories/TypeCategories.tsx"; // 선적종류 카테고리 셀렉트박스 컴포넌트
 import RegionCategories from "../../components/Categories/RegionCategories.tsx"; // 지역 카테고리 셀렉트박스 컴포넌트
 
 // 게시글 수정 컴포넌트 함수 선언(리액트 함수형 컴포넌트)
 export default function SharePostUpdate() {
-    const {ship_id} = useParams<{ ship_id: string }>(); // URL의 /posts/:ship_id/edit에서 ship_id 추출
+    const {post_id} = useParams<{ post_id: string }>(); // URL의 /posts/:post_id/edit에서 post_id 추출
     const nav = useNavigate(); // 라우팅(페이지 이동)용 함수
 
-    const [post, setPost] = useState<Partial<Shipment> | null>(null); // 수정 대상 게시글(일부 속성만, 최초 null)
+    const [post, setPost] = useState<Partial<Post> | null>(null); // 수정 대상 게시글(일부 속성만, 최초 null)
     const [keepFilePaths, setKeepFilePaths] = useState<string[]>([]); // 기존 파일 중 유지할 경로만 저장하는 상태
     const [selectedTypeCategoryId, setSelectedTypeCategoryId] = useState<string | "">(""); // 선택된 타입 카테고리 ID 상태
     const [selectedRegionCategoryId, setSelectedRegionCategoryId] = useState<string | "">(""); // 선택된 지역 카테고리 ID 상태
@@ -24,12 +24,12 @@ export default function SharePostUpdate() {
     const [loading, setLoading] = useState(true); // 게시글 불러오는 동안 true
     const [updating, setUpdating] = useState(false); // 수정 요청 중이면 true(중복제출 방지용)
 
-    // ⭐ 게시글 정보(기존 값) 불러오기 : 처음 렌더링(마운트)되거나 ship_id 바뀔 때마다 실행
+    // ⭐ 게시글 정보(기존 값) 불러오기 : 처음 렌더링(마운트)되거나 post_id 바뀔 때마다 실행
     useEffect(() => {
         async function fetchPost() {
             try {
                 // 서버에서 게시글 1개 조회(GET)
-                const res = await privateAxios.get<Shipment>(`/api/posts/shipments/${ship_id}`);
+                const res = await privateAxios.get<Post>(`/api/posts/${post_id}`);
                 setPost(res.data); // 게시글 데이터 저장(상태값으로)
                 setKeepFilePaths(res.data.file_paths || []); // 기존 파일경로들(없으면 빈 배열)
                 // (카테고리 셀렉트박스 기본값 반영)
@@ -47,7 +47,7 @@ export default function SharePostUpdate() {
         }
 
         fetchPost(); // 위 함수 즉시 실행
-    }, [ship_id]); // ship_id 바뀔 때마다 재실행(동적 라우팅 대응)
+    }, [post_id]); // post_id 바뀔 때마다 재실행(동적 라우팅 대응)
 
     const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setPost((prev) => ({...(prev ?? {}), title: e.target.value}))
@@ -88,7 +88,7 @@ export default function SharePostUpdate() {
     // ⭐ 폼 제출 시(게시글/파일 수정 최종 제출) 호출
     const handleUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault(); // 기본 폼 동작 차단(새로고침 막기)
-        if (!ship_id) return; // ship_id 없는 경우 중단
+        if (!post_id) return; // post_id 없는 경우 중단
         setUpdating(true); // 버튼 비활성화 등 상태전환
         setError(null);    // 에러 초기화
 
@@ -110,10 +110,10 @@ export default function SharePostUpdate() {
             newFiles.forEach(file => formData.append("new_file_paths", file));
 
             // 파일 및 데이터 전송(수정요청, PUT)
-            const res = await privateMultiAxios.put(`/api/posts/shipments/${ship_id}`, formData);
+            const res = await privateMultiAxios.put(`/api/posts/posts/${post_id}`, formData);
 
             setPost(res.data); // 응답으로 받은 최신 게시글 데이터 반영
-            nav(`/posts/${ship_id}`); // 상세페이지로 이동
+            nav(`/posts/${post_id}`); // 상세페이지로 이동
         } catch (error) {
             if (axios.isAxiosError(error)) {
                 setError(error.response?.data?.detail || error.message); // 서버 에러 처리

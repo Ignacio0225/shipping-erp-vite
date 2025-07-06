@@ -10,16 +10,16 @@ import {useCurrentUser} from "../../User/currentUser.tsx";// 현재 로그인 �
 import formatDate from "../formatDate.tsx"; // formatDate 를 정의해놓음
 
 type RepliesProps = {
-    ship_id?: number | undefined;
+    post_id?: number | undefined;
     setRefresh: React.Dispatch<React.SetStateAction<number>>;
     refresh: number;
 }
 
 // 댓글 목록, 수정 기능 포함한 컴포넌트
-export default function Replies({ship_id, setRefresh, refresh}: RepliesProps) {
+export default function Replies({post_id, setRefresh, refresh}: RepliesProps) {
     const {user} = useCurrentUser(); // 현재 로그인된 유저 정보 { id, username, ... }
 
-    // const {ship_id} = useParams<{ ship_id: string }>(); // URL 파라미터에서 게시글 id 추출 (선적 게시글의 id)
+    // const {post_id} = useParams<{ post_id: string }>(); // URL 파라미터에서 게시글 id 추출 (선적 게시글의 id)
 
     const [loading, setLoading] = useState(true); // 댓글 목록 로딩 중 여부
     const [replies, setReplies] = useState<ReplyPageOut | null>(null); // 댓글 리스트+페이지 정보 상태
@@ -45,9 +45,9 @@ export default function Replies({ship_id, setRefresh, refresh}: RepliesProps) {
     };
 
     // 댓글 목록 GET 요청 URL 조립 (선적 id+페이지)
-    const postUrl = `/api/replies/${ship_id}?page=${page}&size=10`;
+    const postUrl = `/api/replies/${post_id}?page=${page}&size=10`;
 
-    // 댓글 목록 불러오는 함수 (페이지, ship_id 등 변화시마다 새로 만듦)
+    // 댓글 목록 불러오는 함수 (페이지, post_id 등 변화시마다 새로 만듦)
     // useCallback: 의존성(postUrl)이 변할 때만 새 함수로 다시 생성, 불필요한 재랜더 방지
     // 리플 업로드나 업데이트 됐을시에도 새로고침이 자동으로 되게 하기 위해 사용됨
     // const fetchReplies = useCallback(async () => {

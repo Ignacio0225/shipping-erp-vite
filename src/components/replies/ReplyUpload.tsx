@@ -5,12 +5,12 @@ import React, {useState} from "react";
 import axios from "axios";
 
 type ReplyUploadProps = {
-    ship_id: number | undefined;
+    post_id: number | undefined;
     setRefresh: React.Dispatch<React.SetStateAction<number>>;
     refresh: number;
 }
 
-export default function ReplyUpload({ship_id, setRefresh, refresh}: ReplyUploadProps) {
+export default function ReplyUpload({post_id, setRefresh, refresh}: ReplyUploadProps) {
 
     const [reply, setReply] = useState<Partial<Reply> | null>(null);
     const [error, setError] = useState<string | null>(null);
@@ -23,7 +23,7 @@ export default function ReplyUpload({ship_id, setRefresh, refresh}: ReplyUploadP
         setError(null);
 
         try {
-            const res = await privateAxios.post<Reply>(`api/replies/${ship_id}`, reply)
+            const res = await privateAxios.post<Reply>(`api/replies/${post_id}`, reply)
             setRefresh(refresh + 1);
             return res.data;
         } catch (error) {

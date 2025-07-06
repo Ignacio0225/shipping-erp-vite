@@ -13,6 +13,7 @@ import NotFound from "./NotFound.tsx";
 import SharePostUploadPage from "./pages/Sharepost/SharePostUpload.tsx";
 import SharePostUpdate from "./pages/Sharepost/SharePostUpdate.tsx";
 import SharePostListPersonal from "./pages/Sharepost/SharePostListPersonal.tsx";
+import Progress from "./pages/Progress/Progress.tsx";
 
 
 const router=createBrowserRouter([
@@ -21,12 +22,13 @@ const router=createBrowserRouter([
         path:'/',
         element:<RootLayout/>,
         children:[
-            {path: '/', element: <Home/>,},
-            {path: '/posts', element: <SharePostList/>,},
+            {path:'/', element: <Home/>,},
+            {path:'/posts', element: <SharePostList/>,},
             {path:'/posts/personal',element:<SharePostListPersonal/>},
-            {path: '/posts/upload',element:<SharePostUploadPage/>},
-            {path:'/posts/:ship_id',element:<SharePost/>,},
-            {path:'/posts/:ship_id/update',element:<SharePostUpdate/>,},
+            {path:'/posts/upload',element:<SharePostUploadPage/>},
+            {path:'/posts/:post_id',element:<SharePost/>,},
+            {path:'/posts/:post_id/progress',element:<Progress/>},
+            {path:'/posts/:post_id/update',element:<SharePostUpdate/>,},
             {path:'*',element:<NotFound/>},
         ],
     },

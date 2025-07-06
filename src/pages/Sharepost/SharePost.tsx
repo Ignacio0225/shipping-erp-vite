@@ -5,7 +5,7 @@ import {useEffect, useState} from "react"; // React 내장 훅 불러오기
 import {Navigate, useNavigate, useParams} from "react-router-dom"; // React Router에서 라우팅 관련 훅 불러오기
 
 import privateAxios from "../../api/axios.ts"; // 인증 토큰이 붙는 axios 인스턴스 import
-import type {Shipment} from '../../types/shipment.ts'; // Shipment 타입 정의 불러오기 (게시글 데이터 타입)
+import type {Post} from '../../types/post.ts'; // Post 타입 정의 불러오기 (게시글 데이터 타입)
 
 import SharePostFileDownload from './SharePostFileDownload.tsx'; // 파일 다운로드 컴포넌트 import
 import Replies from "../../components/replies/Replies.tsx"; // 댓글 목록 컴포넌트 import
@@ -13,32 +13,33 @@ import {useCurrentUser} from "../../User/currentUser.tsx"; // 현재 로그인�
 import formatDate from "../../components/formatDate.tsx";
 import SharePostDelete from "./SharePostDelete.tsx";
 import ReplyUpload from "../../components/replies/ReplyUpload.tsx";
+import Progress from "../Progress/Progress.tsx";
 
 
 // 게시글 상세 페이지 컴포넌트
 export default function SharePost() {
 
-    const [refresh, setRefresh] = useState(0);// 업로드 성공 후 setRefresh(refresh + 1), Replies의 useEffect에 [ship_id, refresh] 의존성 추가
+    const [refresh, setRefresh] = useState(0);// 업로드 성공 후 setRefresh(refresh + 1), Replies의 useEffect에 [post_id, refresh] 의존성 추가
 
 
     const {user} = useCurrentUser(); // 현재 로그인한 사용자 정보, {user: 유저정보, ...} 구조로 반환
 
     const nav = useNavigate(); // 페이지 이동 함수. nav('/경로') 식으로 사용
 
-    const {ship_id} = useParams<{ ship_id: string }>() // URL 파라미터에서 ship_id(게시글 id) 추출
+    const {post_id} = useParams<{ post_id: string }>() // URL 파라미터에서 post_id(게시글 id) 추출
 
-    const [post, setPost] = useState<Shipment | null>(null);     // 게시글 상세 정보를 저장하는 상태 (초기값 null)
+    const [post, setPost] = useState<Post | null>(null);     // 게시글 상세 정보를 저장하는 상태 (초기값 null)
     const [loading, setLoading] = useState(true); // 데이터 로딩 여부
     const [error, setError] = useState<string | null>(null);     // 에러 메시지 상태
 
 
-    // 게시글 상세 조회(처음 mount시/ship_id 변경 시마다)
+    // 게시글 상세 조회(처음 mount시/post_id 변경 시마다)
     useEffect(() => {
         const fetchPost = async () => {
             try {
                 setLoading(true); // 데이터 불러오기 시작
                 // GET 요청(해당 게시글 정보 가져오기)
-                const res = await privateAxios.get<Shipment>(`api/posts/shipments/${ship_id}`)
+                const res = await privateAxios.get<Post>(`api/posts/${post_id}`)
                 setPost(res.data); // 받아온 데이터 상태에 저장
             } catch (error) {
                 if (axios.isAxiosError(error)) { // axios 에러(네트워크, 404 등)
@@ -61,7 +62,7 @@ export default function SharePost() {
 
         void fetchPost(); // 비동기 함수 실행
 
-    }, [ship_id,refresh]); // ship_id(게시글 id)가 바뀔 때마다 실행
+    }, [post_id,refresh]); // post_id(게시글 id)가 바뀔 때마다 실행
 
 
     // 1. 로딩 중이면 로딩 메시지 표시
@@ -89,6 +90,7 @@ export default function SharePost() {
                             {post?.updated_at && (<p>마지막 수정일 : {formatDate(post?.updated_at)}</p>)}
                             <p>타입 : {post?.type_category?.title}</p>
                             <p>지역 : {post?.region_category?.title}</p>
+                            <Progress/>
                             <p>내용 : </p>
                             <p>{post?.description}</p>
                         </div>
@@ -96,19 +98,19 @@ export default function SharePost() {
                         <div className={styles.btnContainer}>
                             {/* 현재 유저가 게시글 작성자인 경우에만 "수정" 버튼 보여줌 */}
                             {post?.creator?.id === user?.id && (
-                                <button type={'button'} onClick={() => nav(`/posts/${post.id}/update`)}> 수정</button>)}
+                                <button type={'button'} onClick={() => nav(`/${post.id}/update`)}> 수정</button>)}
                             {/* 현재 유저가 게시글 작성자인 경우에만 "삭제" 버튼 보여줌 */}
-                            {post?.creator?.id === user?.id && (<SharePostDelete ship_id={post.id}/>)}
+                            {post?.creator?.id === user?.id && (<SharePostDelete post_id={post.id}/>)}
                             {/* 항상 표시되는 "목록" 버튼 */}
-                            <button type={'button'} onClick={() => nav('/posts/')}>목록</button>
+                            <button type={'button'} onClick={() => nav('/posts')}>목록</button>
                         </div>
                         {/* 파일 다운로드 영역(있으면 표시) */}
-                        <SharePostFileDownload ship_id={post?.id} filePaths={post?.file_paths}/>
+                        <SharePostFileDownload post_id={post?.id} filePaths={post?.file_paths}/>
                     </div>
                     {/* 댓글 영역(Reply 컴포넌트로 분리, ship_id를 props로 전달해도 됨) */}
                     <div>
-                        <ReplyUpload ship_id={post?.id} setRefresh={setRefresh} refresh={refresh}/>
-                        <Replies ship_id={post?.id} setRefresh={setRefresh} refresh={refresh}/>
+                        <ReplyUpload post_id={post?.id} setRefresh={setRefresh} refresh={refresh}/>
+                        <Replies post_id={post?.id} setRefresh={setRefresh} refresh={refresh}/>
                     </div>
                 </div>
             ) : (

@@ -5,7 +5,7 @@ import styles from './SharePostList.module.css';  // CSS 모듈 import, 클래�
 import {useEffect, useState} from 'react';  // React 함수형 컴포넌트에서 사용하는 상태, 생명주기 훅 import
 import {privateAxios} from '../../api/axios.ts';  // 커스텀 Axios 인스턴스(import, 인증 포함/헤더 설정된 인스턴스)
 
-import type {Shipment, ShipmentPageOut} from "../../types/shipment.ts";  // 게시글(선적) 목록 타입 (배열+페이지네이션)
+import type {Post, PostPageOut} from "../../types/post.ts";  // 게시글(선적) 목록 타입 (배열+페이지네이션)
 import {useNavigate, useSearchParams} from "react-router-dom";  // SPA 라우팅(페이지 이동), URL 파라미터 관리
 import React from "react";  // React 전체 import(타입/JSX)
 
@@ -19,7 +19,7 @@ export default function SharePostListPersonal() {
 
     const nav = useNavigate();   // 페이지 이동(라우팅) 함수
 
-    const [posts, setPosts] = useState<ShipmentPageOut | null>(null);     // 게시글 페이지(목록+페이지네이션 정보)
+    const [posts, setPosts] = useState<PostPageOut | null>(null);     // 게시글 페이지(목록+페이지네이션 정보)
     const [loading, setLoading] = useState(true); // 로딩 중 여부
     const [error, setError] = useState<string | null>(null);     // 에러 메시지 상태
     const [searchInput, setSearchInput] = useState(''); // 검색 입력 필드 상태
@@ -77,7 +77,7 @@ export default function SharePostListPersonal() {
     };
 
     // API 요청 URL 조립 (선택된 값만 파라미터로 붙음)
-    let url = `/api/posts/shipments/personal?page=${page}&size=10`;
+    let url = `/api/posts/personal?page=${page}&size=10`;
     if (type_category) {
         url += `&type_category=${type_category}`; // type_category 값이 있으면 파라미터 추가
     }
@@ -93,7 +93,7 @@ export default function SharePostListPersonal() {
         const fetchPosts = async () => {
             try {
                 setLoading(true);  // 로딩 시작
-                const res = await privateAxios.get<ShipmentPageOut>(
+                const res = await privateAxios.get<PostPageOut>(
                     url
                 ); // Axios로 GET요청(API)
                 setPosts(res.data);   // 응답 데이터(posts 목록) 상태로 저장
@@ -162,7 +162,7 @@ export default function SharePostListPersonal() {
                         ))}
                     </ul>
                     <div className={styles.paginationContainer}>
-                        <Pagination<Shipment>
+                        <Pagination<Post>
                             currentPage={page}
                             totalPages={posts?.total_pages || 0}
                             maxButtons={10}

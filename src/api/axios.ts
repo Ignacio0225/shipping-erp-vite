@@ -9,7 +9,7 @@ import axios from 'axios';
 export const publicAxios=axios.create({
     baseURL:'http://localhost:8000',
     timeout:5000,
-    headers:{'Content-Type':'application/json'},
+    headers:{'Content-Type': 'application/x-www-form-urlencoded'},
 })
 
 
@@ -56,14 +56,32 @@ privateAxios.interceptors.request.use(
 );
 
 privateAxios.interceptors.response.use(
-    (response) => response,
+    response => response,
+    async error => {
+        // access_token 만료로 401이 왔을 때
+        if (error.response && error.response.status === 401) {
+            // 1. /refresh로 새 access_token 요청
+            try {
+                // refresh_token은 쿠키에 있으므로 credentials 필요
+                const res = await publicAxios.post('/refresh', {}, {withCredentials: true});
+                const newAccessToken = res.data.access_token;
 
-    (error) => {
-        if(error.response.status === 401) {
-            localStorage.removeItem('access_token');
-            alert('세션이 만료 되었습니다. 다시 로그인 해주세요');
-            window.location.href=('/');
+                // 2. 새 access_token을 localStorage에 저장
+                localStorage.setItem('access_token', newAccessToken);
+
+                // 3. 원래 요청을 access_token만 바꿔서 다시 보냄
+                error.config.headers['Authorization'] = `Bearer ${newAccessToken}`;
+                return privateAxios.request(error.config); // 재시도
+            } catch (refreshError) {
+                // 4. 만약 refresh마저 실패하면 (refresh_token도 만료 or 위조)
+                localStorage.removeItem('access_token');
+                alert('로그인 세션이 만료되었습니다. 다시 로그인해주세요.');
+                window.location.href = '/';
+                return Promise.reject(refreshError);
+            }
         }
+        // 401이 아닌 다른 에러는 그대로 처리
+        return Promise.reject(error);
     }
 );
 
@@ -109,14 +127,32 @@ privateMultiAxios.interceptors.request.use(
 );
 
 privateMultiAxios.interceptors.response.use(
-    (response) => response,
+    response => response,
+    async error => {
+        // access_token 만료로 401이 왔을 때
+        if (error.response && error.response.status === 401) {
+            // 1. /refresh로 새 access_token 요청
+            try {
+                // refresh_token은 쿠키에 있으므로 credentials 필요
+                const res = await publicAxios.post('/refresh', {}, {withCredentials: true});
+                const newAccessToken = res.data.access_token;
 
-    (error) => {
-        if(error.response.status === 401) {
-            localStorage.removeItem('access_token');
-            alert('세션이 만료 되었습니다. 다시 로그인 해주세요');
-            window.location.href=('/');
+                // 2. 새 access_token을 localStorage에 저장
+                localStorage.setItem('access_token', newAccessToken);
+
+                // 3. 원래 요청을 access_token만 바꿔서 다시 보냄
+                error.config.headers['Authorization'] = `Bearer ${newAccessToken}`;
+                return privateMultiAxios.request(error.config); // 재시도
+            } catch (refreshError) {
+                // 4. 만약 refresh마저 실패하면 (refresh_token도 만료 or 위조)
+                localStorage.removeItem('access_token');
+                alert('로그인 세션이 만료되었습니다. 다시 로그인해주세요.');
+                window.location.href = '/';
+                return Promise.reject(refreshError);
+            }
         }
+        // 401이 아닌 다른 에러는 그대로 처리
+        return Promise.reject(error);
     }
 );
 

@@ -12,16 +12,16 @@ import {useState} from "react";
 // CSS 모듈 import. styles 객체를 통해 CSS 클래스명을 안전하게 사용 가능.
 
 interface SharePostFilePathProps {
-    ship_id: number;  // 게시글 ID (선적 ID)
+    post_id: number;  // 게시글 ID (선적 ID)
     filePaths: string[] | null | undefined;
     // 게시글에 첨부된 파일 경로 리스트 (문자열 배열)
     // 없을 수도 있으므로 null 또는 undefined 허용
 }
 
 
-export default function SharePostFileDownload({ship_id, filePaths}: SharePostFilePathProps) {
+export default function SharePostFileDownload({post_id, filePaths}: SharePostFilePathProps) {
     // React 컴포넌트 정의
-    // props로 ship_id, filePaths를 받음
+    // props로 post_id, filePaths를 받음
 
 
     const nav = useNavigate();
@@ -68,7 +68,7 @@ export default function SharePostFileDownload({ship_id, filePaths}: SharePostFil
             // 서버에 파일 다운로드 요청 보내기
             // responseType: "blob" → 바이너리 데이터(파일 데이터) 받기 위해 설정
             const res = await privateAxios.get(
-                `/api/posts/shipments/${ship_id}/files/${file_index}/download`,
+                `/api/posts/posts/${post_id}/files/${file_index}/download`,
                 {responseType: "blob"}
             );
 

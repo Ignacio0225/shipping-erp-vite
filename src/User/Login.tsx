@@ -16,8 +16,7 @@ export default function Login({isOpen, onClose, setIsLoggedIn}: LoginProps) {
     const [email, setEmail] = useState('');
     // 비밀번호 입력 상태 변수와 set 함수 (초기값: 빈 문자열)
     const [password, setPassword] = useState('');
-    // 사용자명 입력 상태 변수와 set 함수 (초기값: 빈 문자열)
-    const [username, setUsername] = useState('');
+
     // 로그인 결과 메시지 상태 변수와 set 함수 (초기값: 빈 문자열)
     const [message, setMessage] = useState('');
 
@@ -36,8 +35,15 @@ export default function Login({isOpen, onClose, setIsLoggedIn}: LoginProps) {
         }
 
         try {
+            // x-www-form-urlencoded 형식으로 데이터 생성
+            const params = new URLSearchParams();
+            params.append('username', email);  // username에 이메일 넣음
+            params.append('password', password);
+
             // API로 로그인 요청, username/email/password를 전송
-            const res = await publicAxios.post('/login', {username: username, password: password, email: email});
+            const res = await publicAxios.post(
+                    '/login', params)
+            ;
             // 응답에서 access_token 추출(백엔드 응답 구조에 따라 다름)
             const token = res.data?.access_token;
             // 토큰이 정상적으로 존재할 경우(로그인 성공)
@@ -45,7 +51,6 @@ export default function Login({isOpen, onClose, setIsLoggedIn}: LoginProps) {
                 localStorage.setItem("access_token", token); // 브라우저 localStorage에 토큰 저장(자동 로그인/새로고침 유지 목적)
                 setMessage(''); // 성공 메시지 표시
                 setEmail(''); // 이메일 입력값 초기화(폼 클리어)
-                setUsername(''); // 사용자명 입력값 초기화(폼 클리어)
                 setPassword(''); // 비밀번호 입력값 초기화(폼 클리어)
                 setIsLoggedIn(true); // 부모(Header)의 로그인 상태를 true로 변경(버튼 교체 등 UI 갱신)
                 onClose();
